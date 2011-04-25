@@ -1,0 +1,93 @@
+/*!
+ *	COPYRIGHT NOTICE
+ *	Copyright (c) 2011, Combinz
+ *	All rights reserved.
+ *
+ *	CoGit Library is a Object-Oriented Qt wrap of Git
+ *	CoGit Library is released under the GPLv2 License
+ *
+ *	\file cogit.h
+ *	\brief CoGit类的声明部分
+ *
+ *	\author 丁彦 yandy.ding@gmail.com
+ *	\date 2011/03/01
+ */
+
+#ifndef COGIT_H
+#define COGIT_H
+
+#include "coprocess.h"
+
+#include <QString>
+
+class QObject;
+
+//! 本类的功能：实现与Git程序的交互
+/*! 本类是对Git程序调用的封装，处理调用，输入输出
+ */
+class COGIT_EXPORT CoGit : public QObject
+{
+	Q_OBJECT
+
+	public:
+
+		/*! 构造函数
+		 * \param gitWdDir git的顶级工作目录路径
+		 */
+		explicit CoGit(QString gitWdDir="");
+
+		/*! 析构函数
+		 */
+		~CoGit();
+
+		/*! 获取git的顶级工作目录路径
+		*/
+		const QString gitWdDir() const {return m_gitWdDir;}
+
+		/*! 在子进程中调用Git程序
+		 * \param cmd 不包括"git"在内的命令字符串列表
+		 * \param opt 额外的参数字典
+		 * \param stdOut 存储标准输出结果
+		 * \param stdError 存储标准错误输出结果
+		 * \param inStream 向子进程发送输入的文件的文件名，留空表示不向子进程发送输入
+		 * \param withExceptionsEmit 如果为真，将发送执行异常相关的信号
+		 * \return 如果Git执行正常结束，返回True，否则返回False
+		 */
+		bool execute(QStringList cmd, CoKwargs opt, QString* stdOut, QString* stdError = NULL, QString inStream = "", bool withExceptionsEmit = false);
+
+		/*! 在子进程中调用Git程序
+		 * \param cmd 不包括"git"在内的命令字符串列表
+		 * \param opt 额外的参数字典
+		 * \param stdOut 存储标准输出结果
+		 * \param stdError 存储标准错误输出结果
+		 * \param inStream 向子进程发送输入的文件的文件名，留空表示不向子进程发送输入
+		 * \param withExceptionsEmit 如果为真，将发送执行异常相关的信号
+		 * \return 如果Git执行正常结束，返回True，否则返回False
+		 */
+		bool execute(QStringList cmd, CoKwargs opt, QByteArray* stdOut, QByteArray* stdError = NULL, QString inStream = "", bool withExceptionsEmit = false);
+
+		/*! 向pid号为pid的子进程发送终止信号
+		 * \param pid 子进程的pid号
+		 */
+		void cancel();
+
+	public signal:
+
+		void cancelProcess();
+		void exceptionOccur(CoError::ErrorType error);
+
+
+	private:
+
+		QStringList transformKwargs(CoKwargs opt);
+
+		QString m_gitWdDir;
+		bool m_hasProcess;
+
+
+	private slots:
+
+		void onExcuteExceptionOccur(CoError::ErrorType error);
+};
+
+#endif // COGIT_H

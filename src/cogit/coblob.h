@@ -1,0 +1,101 @@
+/*!
+ *	COPYRIGHT NOTICE
+ *	Copyright (c) 2011, Combinz
+ *	All rights reserved.
+ *
+ *	CoGit Library is a Object-Oriented Qt wrap of Git
+ *	CoGit Library is released under the GPLv2 License
+ *
+ *	\file coblob.h
+ *	\brief CoBlob类的声明部分
+ *
+ *	\author 丁彦 yandy.ding@gmail.com
+ *	\date 2011/03/01
+ */
+
+#ifndef COBLOB_H
+#define COBLOB_H 
+
+#include "corepo.h"
+
+class QHash;
+
+//! 本类的功能：Git Blob对象的封装
+/*!
+ * 本类是Git中的基本对象：Blob对象的封装类,Blob对象存储的是文件的特定版本的内容
+ * 继承自:
+ * \sa CoObject
+ */
+class COGIT_EXPORT CoBlob : public CoObject
+{
+
+	public:
+
+		/*! 构造函数
+		 * \param repo 所属Repo的指针
+		 * \param id Blob对象的（完整的）SHA串
+		 * \param mode Blob对象的mode 
+		 * \param name Blob对象的name 
+		 */
+		explicit CoBlob(CoRepo* repo, QString id, int mode, QString name);
+
+		/*! 构造函数
+		 * \param repo 所属Repo的指针
+		 * \param id Blob对象的SHA串
+		 * \attention 此构造函数较前一个效率低
+		 */
+		explicit CoBlob(CoRepo* repo, QString id);
+
+		/*! 析构函数
+		*/
+		~CoBlob();
+
+		/*! 获取该Git对象的mode
+		 */
+		const int mode() const;
+
+		/*! 获取该Git对象的name
+		 */
+		const QString name() const;
+
+		/*! 获取Blob对象的大小（单位byte）
+		 * \note 第一次调用后，该值将被缓存
+		 */
+		const int size() const;
+
+		/*! 获取Blob对象的内容，如文本内容
+		 *  内容存储在QString型的字符串中
+		 * \note 第一次调用后，该值将被缓存
+		 */
+		const QString data() const;
+
+		/*! 获取Blob对象的mime type 信息
+		 * \note 第一次调用后，该值将被缓存
+		 * \attention 该函数在第一版中未实现，返回值一直是"text/plain"
+		 */
+		const QString mimeType() const;
+
+		/*! 获取Blob对象对应文件的文件名
+		 * \note 第一次调用后，该值将被缓存
+		 */
+		const QString baseName() const;
+
+		/*! 获取给定文件相对于特定commit的Blame信息
+		 * \return 存储在CoBlames类型中的blame信息
+		 * \sa CoBlames 
+		 */
+		static const CoBlames blame(const CoRepo* repo,const CoCommit* commit,const QFile &file);
+
+
+	private:
+
+		int m_mode;
+		QString m_name;
+		int m_size;
+		QString m_data;
+		QString m_mimeType;
+		QString m_baseName;
+};
+
+
+#endif
