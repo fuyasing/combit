@@ -37,7 +37,7 @@ class COGIT_EXPORT CoCommit : public CoObject
 		 * \param tree Commit指向的tree对象
 		 * \param author commit的创建者
 		 * \param authored_date commit创建日期
-		 * \param commiter commit的提交者
+		 * \param committer commit的提交者
 		 * \param committed_date commit的提交日期
 		 * \param message commit提交信息
 		 * \param parents 父commit指针的列表
@@ -45,7 +45,7 @@ class COGIT_EXPORT CoCommit : public CoObject
 		explicit CoCommit
 			(
 			 CoRepo* repo, QString id, CoTree* tree,CoActor author,
-			 QDate authored_date, CoActor commiter,QDate committed_date,
+			 QDate authored_date, CoActor committer,QDate committed_date,
 			 QString message,QList<CoCommit*> parents
 			 );
 
@@ -106,7 +106,7 @@ class COGIT_EXPORT CoCommit : public CoObject
 		
 		/*! 计算从ref开始，向前可达到的所有包含path的commit的个数
 		 * \param repo 所属Repo的指针
-		 * \param ref 计算起始的CoRef的SHA1或name
+		 * \param ref 计算起始的CoRef的name或其所指commit的SHA1值
 		 * \param path 包含的path，默认为空串，表示无path限制
 		 * \sa CoRef
 		 * \attention 这是个静态函数
@@ -117,10 +117,18 @@ class COGIT_EXPORT CoCommit : public CoObject
 		 * \param repo 所属Repo的指针
 		 * \param ref 计算起始的CoRef对象的指针
 		 * \param path 包含的path，默认为空串，表示无path限制
+		 * \attention 这是个静态函数
+		 */
+		static int commitsCount(CoRepo* repo, CoRef* ref, QString path="");
+
+		/*! 计算从ref开始，向前可达到的所有包含path的commit的个数
+		 * \param repo 所属Repo的指针
+		 * \param ref 计算起始的CoRef所指commit的CoCommit对象指针
+		 * \param path 包含的path，默认为空串，表示无path限制
 		 * \sa CoRef
 		 * \attention 这是个静态函数
 		 */
-		static int commitsCount(CoRepo* repo, CoRef *ref, QString path="");
+		static int commitsCount(CoRepo* repo, CoCommit* ref, QString path="");
 
 		/*! 通过"git rev-list"命令生成符合给定条件的所有Commit对象的列表
 		 * \param repo 所属Repo的指针
@@ -141,6 +149,16 @@ class COGIT_EXPORT CoCommit : public CoObject
 		 * \attention 这是个静态函数
 		 */
 		static QList<CoCommit*> findAllCommits(CoRepo* repo, CoRef* ref, CoKwargs kwargs, QString path="");
+
+		/*! 通过"git rev-list"命令生成符合给定条件的所有Commit对象的列表
+		 * \param repo 所属Repo的指针
+		 * \param ref 条件之一；从ref开始，向前可达到的所有commit。CoCommit对象指针形式
+		 * \param kwargs 条件之一；rev-list可选的命令参数列表
+		 * \param path 条件之一；commit需要包含path，默认为空，表示无此限制
+		 * \sa CoRef
+		 * \attention 这是个静态函数
+		 */
+		static QList<CoCommit*> findAllCommits(CoRepo* repo, CoCommit* ref, CoKwargs kwargs, QString path="");
 
 		/*! 根据"git rev-list"命令的输出生成commit对象的列表
 		 * \param repo 所属Repo的指针
@@ -178,26 +196,6 @@ class COGIT_EXPORT CoCommit : public CoObject
 		 * \attention 这是个静态函数
 		 */
 		static QList<CoDiff*> makeDiff(CoRepo* repo, CoTree* a, CoTree* b=NULL, QStringList paths = QStringList());
-
-		/*! 生成tree对象之间或tree对象和index(工作区)之间的CoDiff对象(CoGit库中描述差异的对象)列表
-		 * \param repo 所属Repo的指针
-		 * \param a CoCommit对象的指针
-		 * \param b 如果比较两个tree对象之间的差异，为另一个CoTree对象的指针；如果比较tree和index之间的差异，则赋NULL
-		 * \param paths 比较限定在paths内，留空表示无此限制
-		 * \sa CoDiff 
-		 * \attention 这是个静态函数
-		 */
-		static QList<CoDiff*> makeDiff(CoRepo* repo, CoCommit* a, CoTree* b=NULL, QStringList paths = QStringList());
-
-		/*! 生成tree对象之间或tree对象和index(工作区)之间的CoDiff对象(CoGit库中描述差异的对象)列表
-		 * \param repo 所属Repo的指针
-		 * \param a CoTree对象的指针
-		 * \param b 如果比较两个tree对象之间的差异，为另一个CoCommit对象的指针；如果比较tree和index之间的差异，则赋NULL
-		 * \param paths 比较限定在paths内，留空表示无此限制
-		 * \sa CoDiff 
-		 * \attention 这是个静态函数
-		 */
-		static QList<CoDiff*> makeDiff(CoRepo* repo, CoTree* a, CoCommit* b=NULL, QStringList paths = QStringList());
 
 	private:
 	

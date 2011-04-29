@@ -40,14 +40,7 @@ class COGIT_EXPORT CoTree : public CoObject
 		 * \param mode Tree对象的mode
 		 * \param name Tree对象的name
 		 */
-		explicit CoTree(CoRepo* repo, QString id, int mode, QString name);
-
-		/*! 构造函数
-		 * \param repo 所属Repo的指针
-		 * \param id Tree对象的SHA串
-		 * \attention 此构造函数效率较前一个低
-		 */
-		explicit CoTree(CoRepo* repo, QString id);
+		explicit CoTree(CoRepo* repo, QString id, qint32 mode, QString name);
 
 		/*! 析构函数
 		*/
@@ -59,7 +52,7 @@ class COGIT_EXPORT CoTree : public CoObject
 
 		/*! 获取该Git对象的mode
 		 */
-		const int mode() const;
+		const qint32 mode() const;
 
 		/*! 获取该Git对象的name
 		 */
@@ -90,11 +83,19 @@ class COGIT_EXPORT CoTree : public CoObject
 		 */
 		QStringList itemNames() const;
 
+		/*! 获得id值为id的tree对象的内容,内容组织形式为:
+		 * Hash<name,object*>
+		 * \param repo 所属的Repo
+		 * \param id tree的id值
+		 * \attention 此函数为静态函数
+		 */
+		static QHash<QString,CoObject*> getContentsFromId(const CoRepo* repo, QString id);
+
 	private:
 
 		QString m_name;
-		int m_mode;
-		QHash<QString,CoObject*> m_contens;
+		qint32 m_mode;
+		QHash<QString,CoObject*> m_contents;
 
 };
 

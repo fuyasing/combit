@@ -40,6 +40,17 @@ const CoObject::CoObjType type() const
 	return m_type;
 }
 
-CoObject* CoObject::getObjectFromString(CoRepo *repo,QString text)
+CoObject* CoObject::getObjectFromString(CoRepo *repo, QString text)
 {
+	QStringList textSplit = text.split(QRegExp("\\s+"));
+	CoObject *obj;
+	if(textSplit.at(1)=="blob")
+	{
+		obj = new CoBlob(repo, textSplit.at(2), textSplit.at(0).toInt(), textSplit.at(3));
+	}
+	else if(textSplit.at(1)=="tree")
+	{
+		obj = new CoTree(repo, textSplit.at(2), textSplit.at(0).toInt(), textSplit.at(3));
+	}
+	return obj;
 }

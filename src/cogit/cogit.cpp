@@ -44,7 +44,8 @@ bool CoGit::execute(QStringList cmd, CoKwargs opt, QByteArray* stdOut, QByteArra
 	connect(this,SIGNAL(cancelProcess()),&p,SLOT(onCancel()));
 	if(withExceptionsEmit)
 		connect(&p,SIGNAL(exceptionOccur(CoError::ErrorType)),this,SLOT(onExcuteExceptionOccur(CoError::ErrorType)));
-	cmd += transformKwargs(opt);
+	if(!opt.isEmpty())
+		cmd += transformKwargs(opt);
 	cmd.prepend("git");
 	bool ret = p.runSync(cmd,stdOut,stdError,inStream);
 	m_hasProcess = false;

@@ -37,7 +37,7 @@ class QObject;
 
 /*! Blame结果的封装
  */
-typedef QHash<CoCommit*,QList<int>> CoBlames;
+typedef QMultiHash<CoCommit*,int> CoBlames;
 
 //! 本类的功能：Git Repo的封装类
 /*! 本类是Git Repo的封装类，实现Git Repo的相关操作

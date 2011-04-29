@@ -15,7 +15,7 @@
 
 #include "coblob.h" 
 
-CoBlob::CoBlob(CoRepo *repo, QString id, int mode, QString name):CoObject(repo,id,CoObject::Blob)
+CoBlob::CoBlob(CoRepo *repo, QString id, qint32 mode, QString name):CoObject(repo,id,CoObject::Blob)
 {
 	m_mode = mode;
 	m_name = name;
@@ -27,31 +27,54 @@ CoBlob::~CoBlob()
 {
 }
 
-const int CoObject::mode() const
+const qint32 CoBlob::mode() const
 {
 	return m_mode;
 }
 
-const QString CoObject::name() const
+const QString CoBlob::name() const
 {
 	return m_name;
 }
-
 
 const int CoBlob::size() const
 {
 	if(m_size < 0)
 	{
+		QStringList cmd;
+		cmd << "cat-file" << id();
+		CoKwargs opts;
+		opts.insert("s","");
+		QString out,error;
+		bool success = repo()->repoGit()->execute(cmd, opts, &out, &error);
+		if(success)
+			m_size =  out.trimmed().toInt();
 	}
 	return m_size;
 }
 
 const QString CoBlob::data() const
 {
+	if(m_data.isEmpty())
+	{
+		QStringList cmd;
+		cmd << "cat-file" << id();
+		CoKwargs opts;
+		opts.insert("p","");
+		QString out,error;
+		bool success = repo()->repoGit()->execute(cmd, opts, &out, &error);
+		if(success)
+			m_data =  out;
+	}
+	return m_data;
 }
 
 const QString CoBlob::baseName() const
 {
+	QString base;
+	QFileInfo fi(m_name);
+	base = fi.baseName();
+	return base;
 }
 
 const QString CoBlob::mimeType() const
@@ -59,7 +82,50 @@ const QString CoBlob::mimeType() const
 	//TODO
 }
 
-const CoBlames CoBlob::blame(const CoRepo* repo,const CoCommit* commit,const QFile &file)
+static const QString CoBlob::getDataFromId(const CoRepo* repo, QString id)
 {
+	QStringList cmd;
+	cmd << "cat-file" << id;
+	CoKwargs opts;
+	opts.insert("p","");
+	QString out,error;
+	bool success = repo->repoGit()->execute(cmd, opts, &out, &error);
+	if(success)
+		return out;
+}
+
+const CoBlames CoBlob::blame(const CoRepo* repo,const CoCommit* commit,const QString file)
+{
+	QStringList cmd;
+	cmd << "cat-file" << commit->id() << "--" << file;
+	CoKwargs opts;
+	opts.insert("p", "");
+	QString out, error;
+	bool success = repo->repoGit()->execute(cmd, opts, &out, &error);
+	if(!success)
+		return CoBlames();
+	CoBlames blame;
+	CoCommit* last_commit;
+	QString str;
+	foreach(str,out.split(QRegExp("\\n")))
+	{
+		QRegExp commitIdRe("^[0-9A-Fa-f]{40}");
+		if(commitIdRe.indexIn(str)!=-1)
+		{
+			str = str.trimmed();
+			QRegExp re1cl("^([0-9A-Fa-f]{40})(\\d+)(\\d+)(\\d+)$");
+			QRegExp recl("^([0-9A-Fa-f]{40})(\\d+)(\\d+)$");
+			if(re1cl.indexIn(str)!=-1)
+			{
+				last_commit = new CoCommit(this->repo(),re1cl.cap(1));
+				blame.insert(last_commit,re1cl.cap(3).toInt());
+			}
+			else if(recl.indexIn(str)!=-1)
+			{
+				blame.insert(last_commit,recl.cap(3).toInt());
+			}
+		}
+	}
+	return blame;
 }
 

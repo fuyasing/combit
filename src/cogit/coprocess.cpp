@@ -56,11 +56,11 @@ bool runSync(QStringList cmd, QByteArray* stdOut, QByteArray* stdError, QString 
 void CoProcess::setupSignals()
 {
 	connect(this, SIGNAL(readyReadStandarOutput()),
-			this,SLOT(on_readyReadStandardOutput()));
+			this,SLOT(onReadyReadStandardOutput()));
 	connect(this,SIGNAL(readyReadStandardError()),
 			this,SLOT(onReadyReadStandardError()));
 	connect(this, SIGNAL(finished(int,QProcess::ExitStatus)),
-			this,SLOT(on_finished(int,QProcess::ExitStatus)));
+			this,SLOT(onFinished(int,QProcess::ExitStatus)));
 }
 
 void CoProcess::sendErrorMsg(bool notStarted, QString errDesc)
