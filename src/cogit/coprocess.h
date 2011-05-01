@@ -21,6 +21,9 @@
 #include "cogit_global.h"
 class CoGit;
 
+//! 本类的功能：实现对子进程的控制
+/*! Git程序的具体执行是在子进程中进行的,本进程提供对于子进程的控制方法,包括同步执行,输入输出管道等
+ */
 class CoProcess : public QProcess
 {
 	
@@ -81,3 +84,4 @@ class CoProcess : public QProcess
 
 #endif
 
+//! 本类的功能:实现对子进程的控制

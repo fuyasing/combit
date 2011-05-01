@@ -26,31 +26,41 @@
  */
 class COGIT_EXPORT CoTag : public CoRef
 {
+	public:
 
 		/*! 构造函数
 		 * \param repo 所属Repo的指针
-		 * \param name head的名字，例如master
+		 * \param name tag的名字，例如v1.0
 		 * \param commit 所指向的commit
 		 */
 		explicit CoTag(CoRepo* repo, QString name, CoCommit* commit);
 
 		/*! 构造函数
 		 * \param repo 所属Repo的指针
-		 * \param name head的名字，例如master
+		 * \param name tag的名字，例如v1.0
 		 * \param commit 所指向的commit的id
 		 */
 		explicit CoTag(CoRepo* repo, QString name, QString commit);
 
-		/*! 析构函数
+		/*! 构造函数
+		 * \param repo 所属Repo的指针
+		 * \param name tag的名字，例如v1.0
 		 */
+		explicit CoTag(CoRepo* repo, QString name);
+
+		/*! 析构函数
+		*/
 		~CoTag();
-		
+
 		/*! 获取repo中所有的head的列表
 		 * \param repo 指定的Repo
-		 * \param kwargs git for-each-ref命令可接受的附加参数
+		 * \param opts git for-each-ref命令可接受的附加参数
 		 */
-		static QList<CoTag*> findAllTags(CoRepo* repo, CoKwargs kwargs);
+		static QList<CoTag*> findAllTags(CoRepo* repo, CoKwargs opts=CoKwargs());
+	
+	private:
+			QString m_name;
+		CoCommit* m_commit;
+}
 
-};
-
-#endif 
+#endif

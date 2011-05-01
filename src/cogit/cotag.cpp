@@ -13,4 +13,48 @@
  *	\date 2011/03/01
  */
 
+#include "cotag.h"
 
+CoTag::CoTag(CoRepo* repo, QString name, CoCommit* commit):CoRef(repo, name, commit, CoRefType::Tag)
+{
+	m_name = name;
+	m_commit = commit;
+}
+
+CoTag::CoTag(CoRepo* repo, QString name, QString commit):CoRef(repo, name, commit, CoRefType::Tag)
+{
+	m_name = name;
+	m_commit = new CoCommit(repo, commit);
+}
+
+CoTag::CoTag(CoRepo* repo, QString name):CoRef(repo, name, CoRefType::tTag)
+{
+}
+
+CoTag::~CoTag()
+{
+}
+
+static QList<CoTag*> CoTag::findAllTags(CoRepo* repo, CoKwargs opts)
+{	
+	QStringList cmd;
+	QList<CoTag*> tags;
+	cmd << "for-each-ref" << "refs/tags";
+	opts.insert("sort","*authoreddate");
+	opts.insert("format","%(refname) %(objectname)");
+	QString out;
+	bool success = repo->repoGit()->execute(cmd, opts, &out);
+	if(success)
+	{
+		QString line, commit, name;
+		foreach(line, out.split('\n'))
+		{
+				QStringList lineSplit;
+				lineSplit =  line.trimmed().split(" ");
+				commit =lineSplit.last();
+				name = lineSplit.first().split('/').last();
+				tags.append(new CoTag(repo, name, commit));
+		}
+	}
+	return tags;
+}

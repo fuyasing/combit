@@ -49,7 +49,7 @@ class COGIT_EXPORT CoDiff
 		explicit CoDiff(
 				CoRepo* repo,QString a_path, QString b_path, 
 				CoCommit* a_commit, CoCommit* b_commit,
-				int a_mode, int b_mode, bool new_file, bool deleted_file, 
+				qint32 a_mode, qint32 b_mode, bool new_file, bool deleted_file, 
 				QString rename_from, QString rename_to, QString diff
 			);
 	
@@ -70,7 +70,7 @@ class COGIT_EXPORT CoDiff
 		explicit CoDiff(
 				CoRepo* repo,QString a_path, QString b_path, 
 				QString a_commit, QString b_commit,
-				int a_mode, int b_mode, bool new_file, bool deleted_file, 
+				qint32 a_mode, qint32 b_mode, bool new_file, bool deleted_file, 
 				QString rename_from, QString rename_to, QString diff
 			);
 
@@ -100,11 +100,11 @@ class COGIT_EXPORT CoDiff
 
 		/*! 获取在a中的mode
 		 */
-		const int aMode() const;
+		const qint32 aMode() const;
 
 		/*! 获取在b中的mode
 		 */
-		const int bMode() const;
+		const qint32 bMode() const;
 
 		/*! 是否是新文件
 		 * \return 是新文件返回True
@@ -145,8 +145,8 @@ class COGIT_EXPORT CoDiff
 		QString m_bPath;
 		CoCommit* m_aCommit;
 		CoCommit* m_bCommit;
-		int m_aMode;
-		int m_bMode;
+		qint32 m_aMode;
+		qint32 m_bMode;
 		bool m_isNewFile;
 		bool m_isDeletedFile;
 		QString m_renameFrom;

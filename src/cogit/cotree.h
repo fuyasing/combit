@@ -46,15 +46,11 @@ class COGIT_EXPORT CoTree : public CoObject
 		*/
 		~CoTree();
 
-		/*! 获取Tree对象对应的目录的目录名
-		*/
-		const QString baseName() const;
-
 		/*! 获取该Git对象的mode
 		 */
 		const qint32 mode() const;
 
-		/*! 获取该Git对象的name
+		/*! 获取该Git对象的name,即所指目录的目录名
 		 */
 		const QString name() const;
 
@@ -93,6 +89,9 @@ class COGIT_EXPORT CoTree : public CoObject
 
 	private:
 
+		void initContents();
+
+		bool m_isInited;
 		QString m_name;
 		qint32 m_mode;
 		QHash<QString,CoObject*> m_contents;

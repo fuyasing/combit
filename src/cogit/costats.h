@@ -18,7 +18,7 @@
 
 #include "corepo.h"
 
-//! 存储Stat信息的基础单元
+//! 本类的功能：存储Stat信息的基础单元
 /*! 字典(或称Hash)数据结构，包含4个键值对：
  * deletions = 删除的行数
  * insertions = 插入的行数
@@ -76,6 +76,11 @@ class COGIT_EXPORT CoStatDict
 		 * \return 如果设置成功，返回True；否则，返回False
 		 */
 		bool setFiles(int num);
+
+		/*! 判断Statas信息是否为空:即有没有差异
+		 * \return 如果为空返回True
+		 */
+		bool isEmpty();
 
 
 	private:

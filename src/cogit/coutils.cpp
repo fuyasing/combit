@@ -13,4 +13,30 @@
  *	\date 2011/03/01
  */
 
- 
+#include "coutils.h" 
+
+void CoUtils::touch(QString filename)
+{
+	QFile file(filename);
+	if(!file.open(QIODevice::WriteOnly))
+		return false;
+	file.close();
+	return true;
+}
+
+bool CoUtils::isGitDir(QString path)
+{
+	QDir gitDir(path);
+	if(gitDir.exists())
+	{
+		QDir objectsDir(path);
+		QDir refsDir(path);
+		if(objectsDir.cd("objects") && refsDir.cd("refs") && gitDir.exists("HEAD"))
+		{
+			QFileInfo headref(gitDir,"HEAD");
+			bool ret = headref.isFile() || (headref.isSymLink() && headref.symLinkTarget().startsWith("refs"));
+			return ret;
+		}
+	}
+	return false;
+}

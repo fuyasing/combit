@@ -44,7 +44,6 @@ typedef QMultiHash<CoCommit*,int> CoBlames;
  */
 class COGIT_EXPORT CoRepo
 {
-
 	
 	public:
 		
@@ -54,12 +53,17 @@ class COGIT_EXPORT CoRepo
 		 * CoRepo repo("/Users/yandy/workspace/cogit");
 		 * CoRepo repo("/Users/yandy/workspace/cogit.git");
 		 * \param path Git Repo的路径，如详述部分的示例
+		 * \attention path请使用绝对路径
 		 */
 		explicit CoRepo(QString path="");
 
 		/*! 析构函数
 		 */
 		~CoRepo();
+
+		/*! 判断该对象所指目录是否为一个Git仓库目录
+		 */
+		const bool isRepo() const;
 
 		/*! 判断是否为bare Repo
 		 */
@@ -86,12 +90,28 @@ class COGIT_EXPORT CoRepo
 		
 		/*! 获得关于Repo的描述信息
 		 */
-		QString getDescription();
+		QString getDescription() const;
 
 		/*! 设置关于Repo的描述信息
-		 * \return 如果设置成功，返回True
+		 * \param descr 描述信息内容
 		 */
-		bool setDescription(QString descr);
+		void setDescription(QString descr);
+
+		/*! 判断该仓库是否支持基于git://协议的公共,非授权的只读访问,如果支持返回True
+		 */
+		bool isDaemonExport();
+
+		/*! 设置该仓库是否支持基于git://协议的公共,非授权的只读访问
+		 */
+		void setDaemonExport(bool is_daemon_export);
+
+		/*! 获得该仓库的备选仓库,如果没有则返回空字符串列表
+		 */
+		QStringList getAlternates();
+
+		/*! 设置该仓库的备选仓库列表
+		 */
+		void setAlternates(QStringList paths);
 
 		/*! 判断index的状态，是否有未提交的改动
 		 * \return 如果有未提交的改动，返回True
@@ -104,7 +124,11 @@ class COGIT_EXPORT CoRepo
 		
 		/*! 获取当前Repo所有分支的列表
 		 */
-		QList<CoHead *> branches();
+		QList<CoHead*> branches();
+
+		/*! 获得当前Repo所有Tag的列表
+		 */
+		QList<CoTag*> tags();
 
 		/*! 获得指定分支里符合一定限制条件的所有commit的列表
 		 * \param start 分支名或commit id
@@ -127,43 +151,44 @@ class COGIT_EXPORT CoRepo
 		 */
 		QList<CoCommit *> commitsSince(QString start="master",QString path="",QDate since=QDate(1970,1,1));
 
-		/*! 获得在otherRepo的otherRef中存在而在本仓库的ref中不存在的commits的列表
-		 * \param otherRepo 别的Repo
-		 * \param ref 本Repo的分支
-		 * \param otherRef 别的Repo的分支
+		/*! 获得指定分支中所含commit的个数
+		 * \param start 分支名或commit id
+		 * \param path 限定条件之一:commit必须含有path,置空表示无此限制
 		 */
-		QList<CoCommit *> commitDeltas(CoRepo * otherRepo, QString ref="master", QString otherRef="master");
+		int commitCountInBranch(QString start = "master", QString path = "");
+
 
 		/*! 复制一个当前Repo的bare Repo，到path路径(包含新Repo的目录名)下
 		 * \param path 新Repo的完整路径(一般以/<name>.git结尾)
-		 * \param kwargs 传递给git clone命令的额外的参数
+		 * \param opts 传递给git clone命令的额外的参数
 		 */
-		CoRepo* forkBare(QString path, CoKwargs kwargs);
+		CoRepo* forkBare(QString path, CoKwargs opts = CoKwargs());
 
 		/*! 对给定的分支或commit或tree打包
 		 * \param name 分支名或commit或tree的id
 		 * \param prefix tar包中，每个文件名的前缀
 		 * \return 打成包的二进制码
 		 */
-		QByteArray* archiveTar(QString name="master",QString prefix="");
+		QByteArray* archiveTar(QString treeish="master",QString prefix="");
 
 		/*! 对给定的分支或commit或tree打包并压缩
 		 * \param name 分支名或commit或tree的id
 		 * \param prefix 压缩包中，每个文件名的前缀
 		 * \return 打成压缩包后的二进制码
 		 */
-		QByteArray* archiveTarGz(QString name="master",QString prefix="");
+		QByteArray* archiveTarGz(QString treeish="master",QString prefix="");
 		
 		/*! 将给定的路径初始化为Git bare Repo
 		 * \param path 要创建的bare Repo的完整路径(一般以/<name>.git结尾)
 		 * \param mkdir 如果为True，则如果path所指向的目录不存在，则创建之
-		 * \param kwargs python风格的额外参数字典
+		 * \param opts python风格的额外参数字典
 		 * \attention 此函数为静态函数
 		 */
-		static CoRepo* initBare(QString path, bool mkdir=true, CoKwargs kwargs);
+		static CoRepo* initBare(QString path, bool mkdir=true, CoKwargs opts);
 
 	private:
 
+		bool m_isRepo;
 		bool m_isBare;
 		QString m_gitPath;
 		QString m_wdPath;

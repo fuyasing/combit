@@ -43,7 +43,7 @@ class COGIT_EXPORT CoObject
 		/*! 构造函数
 		 * \param repo 所属Repo的指针
 		 * \param id Git对象的（完整的）SHA串
-		 * \param CoObjType Git对象的子类类别
+		 * \param type Git对象的子类类别
 		 */
 		explicit CoObject(CoRepo* repo,QString id,CoObjType type);
 

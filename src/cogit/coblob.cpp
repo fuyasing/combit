@@ -73,7 +73,7 @@ const QString CoBlob::baseName() const
 {
 	QString base;
 	QFileInfo fi(m_name);
-	base = fi.baseName();
+	base = fi.completeBaseName();
 	return base;
 }
 
@@ -109,6 +109,7 @@ const CoBlames CoBlob::blame(const CoRepo* repo,const CoCommit* commit,const QSt
 	QString str;
 	foreach(str,out.split(QRegExp("\\n")))
 	{
+		str = str.trimmed();
 		QRegExp commitIdRe("^[0-9A-Fa-f]{40}");
 		if(commitIdRe.indexIn(str)!=-1)
 		{

@@ -15,7 +15,7 @@
 
 #include "cocommit.h"
 
-CoCommit::CoCommit(CoRepo* repo, QString id, CoTree* tree,CoActor author, QDate authored_date, CoActor committer,QDate committed_date, QString message,QList<CoCommit*> parents):CoObject(repo, id, CoObject::Commit)
+CoCommit::CoCommit(CoRepo* repo, QString id, QString tree,CoActor author, QDateTime authored_date, CoActor committer,QDateTime committed_date, QString message,QStringList parents):CoObject(repo, id, CoObject::Commit)
 {
 	m_tree = tree;
 	m_author = author;
@@ -23,12 +23,38 @@ CoCommit::CoCommit(CoRepo* repo, QString id, CoTree* tree,CoActor author, QDate 
 	m_committer = committer;
 	m_committedDate = committed_date;
 	m_message = message;
-	m_parentsList = parents;
+	m_parentsIds = parents;
 }
 
-CoCommit::CoCommit(CoRepo* repo, QString id)
+CoCommit::CoCommit(CoRepo* repo, QString id):CoObject(repo, id, CoObject::Commit)
 {
-	//TODO
+	QStringList cmd;
+	cmd << "cat-file" << id;
+	CoKwargs opts;
+	opts.insert("p","");
+	QString out;
+	bool success = repo->repoGit()->execute(cmd, opts, &out);
+	if(success)
+	{
+		QStringList lines = out.split('\n');
+		while(!lines.isEmpty())
+		{
+			m_tree = lines.takeFirst().trimmed().split(QRegExp("\\s+")).last();
+			while(!lines.isEmpty() && lines.first().startsWith("parent"))
+				m_parentsIds.append(lines.takeFirst().trimed().split(QRegExp("\\s+")).last());
+			QStringList lineSplit = lines.takeFirst().trimmed().split(QRegExp("\\s+")).removeFirst().removeLast();
+			m_authorDate = QDateTime::fromTime_t(lineSplit.takeLast().toUInt());
+			m_author = CoActor::CoActor(lineSplit.join(" "));
+			QStringList lineSplit = lines.takeFirst().trimmed().split(QRegExp("\\s+")).removeFirst().removeLast();
+			m_committedDate = QDateTime::fromTime_t(lineSplit.takeLast().toUInt());
+			m_committer = CoActor::CoActor(linesSplit.join(" "));
+			QStringList messages;
+			if(!lines.isEmpty() && lines.first().trimmed().isEmpty())
+				while(!lines.isEmpty())
+					messages.append(lines.takeFirst().trimmed());
+			m_message = messages.join("\n");
+		}
+	}
 }
 
 CoCommit::~CoCommit()
@@ -37,10 +63,20 @@ CoCommit::~CoCommit()
 
 QList<CoCommit*> CoCommit::parents() const
 {
+	if(m_parentsIds.isEmpty())
+		return QList<CoCommit*>();
+	if(m_parentsList.isEmpty())
+	{
+		QString parentId;
+		foreach(parentId,m_parentsIds)
+		{
+			m_parentsList.append(new CoCommit(repo(),parentId));
+		}
+	}
 	return m_parentsList;
 }
 
-const CoTree* CoCommit::tree() const
+const QString CoCommit::tree() const
 {
 	return m_tree;
 }
@@ -72,7 +108,7 @@ const QString CoCommit::idAbbrev() const
 
 const QString CoCommit::summary() const
 {
-	return m_message.split(QRegExp("\\n")).at(0);
+	return m_message.split('\n').at(0);
 }
 
 const QString CoCommit::message() const
@@ -82,7 +118,7 @@ const QString CoCommit::message() const
 
 QList<CoDiff*> CoCommit::diffs() const
 {
-	if(m_parentsList.isEmpty())
+	if(m_parentsIds.isEmpty())
 	{
 		QStringList cmd;
 		cmd << "show" << id();
@@ -109,14 +145,14 @@ QList<CoDiff*> CoCommit::diffs() const
 	}
 	else
 	{
-		return makeDiff(repo(),m_parentsList.first(),this);
+		return makeDiff(repo(),m_parentsIds.first(),this);
 	}
 }
 
 const CoStats* CoCommit::stats() const
 {
 	QString out;
-	if(m_parentsList.isEmpty())
+	if(m_parentsIds.isEmpty())
 	{
 		QStringList cmd;
 		cmd << "diff-tree" << id();
@@ -124,25 +160,50 @@ const CoStats* CoCommit::stats() const
 		opts.insert("numstat","");
 		opts.insert("root","");
 		bool success = repo()->repoGit()->execute(cmd, opts, &out);
-		QString out2;
-		foreach(str, out.split(QRegExp("\\n").removeFirst()))
-		{
-			QStringList strSplit = str.split(QRegExp("\\t"));
-			out2 = "%1\t%2\t%3\n";
-			out2.arg(strSplit.at(0)).arg(strSplit.at(1)).arg(strSplit.at(2));	
-		}
-		out = out2;
+		out = out.split('\n').removeFirst().join('\n');
 	}
 	else
 	{
 		QStringList cmd;
-		cmd << "diff" << m_parentsList.first().id() << id();
+		cmd << "diff" << m_parentsIds.first() << id();
 		CoKwargs opts;
 		opts.insert("numstat","");
 		bool success = repo()->repoGit()->execute(cmd, opts, &out);
 	}
-	return CoStats::CoStats(repo(), out); 
+	return new CoStats::CoStats(repo(), out); 
 }
+
+//const CoStats* CoCommit::stats() const
+//{
+	//QString out;
+	//if(m_parentsIds.isEmpty())
+	//{
+		//QStringList cmd;
+		//cmd << "diff-tree" << id();
+		//CoKwargs opts;
+		//opts.insert("numstat","");
+		//opts.insert("root","");
+		//bool success = repo()->repoGit()->execute(cmd, opts, &out);
+		//QString out2 ="";
+		//QString str;
+		//foreach(str, out.split('\n').removeFirst())
+		//{
+			//QStringList strSplit = str.trimmed().split('\t');
+			//out2 += "%1\t%2\t%3\n";
+			//out2.arg(strSplit.at(0)).arg(strSplit.at(1)).arg(strSplit.at(2));
+		//}
+		//out = out2;
+	//}
+	//else
+	//{
+		//QStringList cmd;
+		//cmd << "diff" << m_parentsIds.first() << id();
+		//CoKwargs opts;
+		//opts.insert("numstat","");
+		//bool success = repo()->repoGit()->execute(cmd, opts, &out);
+	//}
+	//return new CoStats::CoStats(repo(), out); 
+//}
 
 static int CoCommit::commitsCount(CoRepo* repo,QString ref, QString path)
 {
@@ -154,7 +215,7 @@ static int CoCommit::commitsCount(CoRepo* repo,QString ref, QString path)
    }
 	QString out;
 	bool sucess = repo->repoGit()->execute(cmd, CoKwargs(), &out);
-	return out.trimmed().split(QRegExp("\\n")).size();
+	return out.trimmed().split('\n').size();
 }
 
 static int CoCommit::commitsCount(CoRepo* repo, CoRef* ref, QString path)
@@ -167,7 +228,7 @@ static int CoCommit::commitsCount(CoRepo* repo, CoCommit* ref, QString path)
 	return commitsCount(repo, ref.id(), path);
 }
 
-static QList<CoCommit*> CoCommit::findAllCommits(CoRepo* repo, QString ref, CoKwargs kwargs, QString path)
+static QList<CoCommit*> CoCommit::findAllCommits(CoRepo* repo, QString ref, CoKwargs opts, QString path)
 {
 	QStringList cmd;
 	cmd << "rev-list" << ref;
@@ -175,23 +236,78 @@ static QList<CoCommit*> CoCommit::findAllCommits(CoRepo* repo, QString ref, CoKw
 	{
 		cmd << "--" << path;
 	}
-	kwargs.insert("pretty","raw");
+	opts.insert("pretty","raw");
 	QString out;
-	bool success = repo->repoGit()->execute(cmd, kwargs, &out);
+	bool success = repo->repoGit()->execute(cmd, opts, &out);
 	return listCommitsFromString(repo, out);
-}
-
-static QList<CoCommit*> CoCommit::findAllCommits(CoRepo* repo, CoRef* ref, CoKwargs kwargs, QString path)
-{
-	return findAllCommits(reppo, ref.name(), kwargs, path);
-}
-
-static QList<CoCommit*> CoCommit::findAllCommits(CoRepo* repo, CoCommit* ref, CoKwargs kwargs, QString path)
-{
-	return findAllCommits(reppo, ref.id(), kwargs, path);
 }
 
 static QList<CoCommit*> CoCommit::listCommitsFromString(CoRepo* repo, QString text)
 {
-
+	QStringList lines;
+	QString str;
+	foreach(str, text.split('\n'))
+	{
+		if(!str.trimmed().isEmpty())
+		{
+			lines.append(str);
+		}
+	}
+	QList<CoCommit*> commits;
+	while(!lines.isEmpty())
+	{
+		QString id = lines.takeFirst().trimmed().split(QRegExp("\\s+")).at(1);
+		QString tree = lines.takeFirst().trimmed().split(QRegExp("\\s+")).at(1);
+		QStringList parents;
+		while(!lines.isEmpty() && lines.first().startsWith("parent"))
+			parents.append(lines.takeFirst().trimmed().split(QRegExp("\\s+")).last());
+		QStringList lineSplit = lines.takeFirst().trimmed().split(QRegExp("\\s+")).removeFirst().removeLast();
+		QDateTime authorTime = QDateTime::fromTime_t(lineSplit.takeLast().toUInt());
+		CoActor	authorInfo = CoActor::CoActor(lineSplit.join(" "));
+		QStringList lineSplit = lines.takeFirst().trimmed().split(QRegExp("\\s+")).removeFirst().removeLast();
+		QDateTime committerTime = QDateTime::fromTime_t(lineSplit.takeLast().toUInt());
+		CoActor	committerInfo = CoActor::CoActor(linesSplit.join(" "));
+		QStringList messages;
+		while(!lines.isEmpty() && lines.first().startsWith(' '))
+			messages.append(lines.takeFirst().trimmed());
+		QString message = messages.join("\n");
+		commits.append(new CoCommit(repo, id, tree, authorInfo, authorTime, committerInfo, committerTime, message, parents));
+	}
+	return commits;
 }
+
+static QList<CoDiff*> CoCommit::makeDiff(CoRepo* repo, QString a, QString b, QStringList paths)
+{
+	if(!paths.isEmpty())
+		paths.prepend("--");
+	if(!b.isEmpty())
+		paths.prepend(b);
+	paths.prepend(a);
+	
+	QStringList cmd;
+	cmd << "diff" << paths;
+	CoKwargs opts;
+	opts.insert("M","");
+	opts.insert("full-index","");
+	QString out;
+	bool success = repo->repoGit()->execute(cmd, opts, &out);
+	if(success)
+		return CoDiff::diffsFromString(repo, out);
+}
+
+static QList<CoDiff*> CoCommit::makeDiff(CoRepo* repo, CoCommit* a, CoCommt* b, QStringList paths)
+{
+	if(!b)
+		return makeDiff(repo, a->id(), b->id(), paths);
+	else
+		return makeDiff(repo, a->id(), "", paths);
+}
+
+static QList<CoDiff*> CoCommit::makeDiff(CoRepo* repo, CoTree* a, CoTree* b, QStringList paths)
+{
+	if(!b)
+		return makeDiff(repo, a->id(), b->id(), paths);
+	else
+		return makeDiff(repo, a->id(), "", paths);
+}
+

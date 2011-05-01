@@ -47,7 +47,7 @@ class COGIT_EXPORT CoBlob : public CoObject
 		 */
 		const qint32 mode() const;
 
-		/*! 获取该Git对象的name
+		/*! 获取该Git对象的name,即所指文件的文件名
 		 */
 		const QString name() const;
 
@@ -68,7 +68,7 @@ class COGIT_EXPORT CoBlob : public CoObject
 		 */
 		const QString mimeType() const;
 
-		/*! 获取Blob对象对应文件的文件名
+		/*! 获取Blob对象对应文件的文件名(不含扩展名)
 		 * \note 第一次调用后，该值将被缓存
 		 */
 		const QString baseName() const;

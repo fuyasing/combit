@@ -25,8 +25,9 @@ set(cogit_SRCS
 	coerrors.cpp
 	cogit.cpp
 	cohead.cpp
-	colazy.cpp
+	coobject.cpp
 	coprocess.cpp
+	coref.cpp
 	corepo.cpp
 	costats.cpp
 	cotag.cpp
@@ -41,9 +42,10 @@ set(cogit_HEADERS
 	coerrors.h
 	cogit.h
 	cohead.h
-	colazy.h
+	coobject.h
 	coprocess.h
 	corepo.h
+	coref.h
 	costats.h
 	cotag.h
 	cotree.h

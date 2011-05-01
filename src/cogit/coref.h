@@ -32,26 +32,43 @@ class COGIT_EXPORT CoRef
 
 	public:
 
+		/*!关于Git引用类型的枚举,方便确定一个指向子类实例的CoRef指针指向的到底是哪种子类实例*/
+		enum CoRefType
+		{
+			Head,	/*!<Head类型*/
+			Tag	/*!<Tag类型*/
+		};
+
 		/*! 构造函数
 		 * \param repo 所属Repo的指针
 		 * \param name Ref的名字，例如master
 		 * \param commit 所指向的commit
+		 * \param type Git对象的子类类别
 		 */
-		explicit CoRef(CoRepo* repo, QString name, CoCommit* commit);
+		explicit CoRef(CoRepo* repo, QString name, CoCommit* commit, CoRefType type);
 
 		/*! 构造函数
 		 * \param repo 所属Repo的指针
 		 * \param name Ref的名字，例如master
 		 * \param commit 所指向的commit的id
+   		 * \param type Git对象的子类类别
 		 */
-		explicit CoRef(CoRepo* repo, QString name, QString commit);
+		explicit CoRef(CoRepo* repo, QString name, QString commit, CoRefType type);
 
-		/*! 构造函数，只根据name值构造CoRef
+		/*! 构造函数
 		 * \param repo 所属Repo的指针
 		 * \param name Ref的名字，例如master
+   		 * \param type Git对象的子类类别
 		 */
-		explicit CoRef(CoRepo* repo, QString name);
+		explicit CoRef(CoRepo* repo, QString name, CoRefType type);
 
+		/*!析构函数
+		 */
+		~CoRef();
+
+		/*!获取指向该Git引用所属Repo的指针
+		 */
+		const CoRepo* repo() const;
 		/*! 获取Git引用的名字
 		*/
 		const QString name() const;
@@ -59,6 +76,9 @@ class COGIT_EXPORT CoRef
 		/*! 获取Git引用指向的commit
 		*/
 		const CoCommit* commit() const;
+
+		/*!获取该Git引用的类型*/
+		const CoRefType type() const;
 	
 	protect:
 		/*! 设置Git引用指向的commit
@@ -79,6 +99,7 @@ class COGIT_EXPORT CoRef
 		CoRepo* m_repo;
 		QString m_name;
 		CoCommit* m_commit;
+		CoRefType m_type;
 
 };
 
