@@ -54,6 +54,7 @@ set(cogit_HEADERS
 
 qt4_wrap_cpp(cogit_HEADERS_MOC ${cogit_HEADERS})
 
+set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
 add_library(CoGit ${LIBRARY_TYPE} ${cogit_SRCS} ${cogit_HEADERS_MOC})
 target_link_libraries(CoGit ${QT_LIBRARIES})

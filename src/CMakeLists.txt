@@ -33,6 +33,8 @@ qt4_wrap_cpp(combit_MOC_UI ${combit_UIS_H})
 qt4_add_resources(combit_RCCS_SRCS ${combit_RCCS})
 add_definitions(-DQT_NO_DEBUG)
 
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+
 add_executable (Combit
   ${combit_SRCS}
   ${combit_MOCS}
