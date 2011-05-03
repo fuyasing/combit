@@ -4,12 +4,12 @@ set (COGIT_VERSION_RELEASE 1)
 set (COGIT_VERSION "${COGIT_VERSION_MAJOR}.${COGIT_VERSION_MINOR}.${COGIT_VERSION_RELEASE}" )
 
 include_directories (
-	${CMAKE_CURRENT_BINARY_DIR}
+	${VERSION_HEAD_INCLUDES}
 	)
 
 configure_file (
 	"${CMAKE_CURRENT_SOURCE_DIR}/version_cogit.h.cmake"
-	"${CMAKE_CURRENT_BINARY_DIR}/version_cogit.h"
+	"${VERSION_HEAD_INCLUDES}/version_cogit.h"
 	)
 
 add_definitions(-DCOGIT_LIBRARY)
