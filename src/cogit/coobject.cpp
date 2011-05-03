@@ -9,7 +9,8 @@
  *	\file coobject.cpp
  *	\brief CoObject类的实现部分
  *
- *	\author 丁彦 yandy.ding@gmail.com
+ *	\author 丁彦 dingyan@freestorm.org
+ *	\author 付亚星 fuyaxing@freestorm.org
  *	\date 2011/03/01
  */
 

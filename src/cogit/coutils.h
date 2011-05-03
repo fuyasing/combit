@@ -9,7 +9,8 @@
  *	\file coutils.h
  *	\brief CoUtils命名空间所包含内容的声明部分
  *
- *	\author 丁彦 yandy.ding@gmail.com
+ *	\author 丁彦 dingyan@freestorm.org
+ *	\author 付亚星 fuyaxing@freestorm.org
  *	\date 2011/03/01
  */
 

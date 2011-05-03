@@ -10,6 +10,7 @@
  *	\brief CoCommit类的声明部分
  *
  *	\author 丁彦 dingyan@freestorm.org
+ *	\author 付亚星 fuyaxing@freestorm.org
  *	\date 2011/03/01
  */
 

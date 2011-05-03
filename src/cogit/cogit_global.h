@@ -9,7 +9,8 @@
  *	\file cogit_global.h
  *	\brief CoGit库的全局声明声明部分
  *
- *	\author 丁彦 yandy.ding@gmail.com
+ *	\author 丁彦 dingyan@freestorm.org
+ *	\author 付亚星 fuyaxing@freestorm.org
  *	\date 2011/03/01
  *
  *	\version 0.1
