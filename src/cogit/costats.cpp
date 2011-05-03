@@ -14,6 +14,9 @@
  */
 
 #include "costats.h"
+#include "corepo.h"
+
+#include <QStringList>
 
 CoStatDict::CoStatDict()
 {
@@ -118,22 +121,22 @@ CoStats::~CoStats()
 {
 }
 
-const CoRepo* CoStats::repo() const
+CoRepo* CoStats::repo() const
 {
 	return m_repo;
 }
 
-const CoStatDict CoStats::total() const
+CoStatDict CoStats::total() const
 {
 	return m_total;
 }
 
-const QHash<QString, CoStatDict> CoStats::files() const
+QHash<QString, CoStatDict> CoStats::files() const
 {
 	return m_files;
 }
 
-const bool CoStats::isClean() const
+const bool CoStats::isClean()
 {
 	return m_total.isEmpty();
 }

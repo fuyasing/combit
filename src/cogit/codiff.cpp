@@ -14,6 +14,11 @@
  */
 
 #include "codiff.h"
+#include "cocommit.h"
+#include "corepo.h"
+
+#include <QList>
+#include <QRegExp>
 
 CoDiff::CoDiff(CoRepo* repo,QString a_path,QString b_path, CoCommit* a_commit, CoCommit* b_commit, qint32 a_mode, qint32 b_mode, bool new_file, bool deleted_file, QString rename_from, QString rename_to,QString diff)
 {
@@ -24,7 +29,7 @@ CoDiff::CoDiff(CoRepo* repo,QString a_path,QString b_path, CoCommit* a_commit, C
 	m_bCommit = b_commit;
 	m_aMode = a_mode;
 	m_bMode = b_mode;
-	m_isNewFile = nw_file;
+	m_isNewFile = new_file;
 	m_isDeletedFile = deleted_file;
 	m_renameFrom = rename_from;
 	m_renameTo = rename_to;
@@ -73,7 +78,7 @@ const CoCommit* CoDiff::aCommit() const
 	return m_aCommit;
 }
 
-const CoDiff::bCommit() const
+const CoCommit* CoDiff::bCommit() const
 {
 	return m_bCommit;
 }
@@ -118,40 +123,28 @@ const QString CoDiff::diffContent() const
 	return m_diff;
 }
 
-const QList<CoDiff*> CoDiff::diffsFromString(CoRepo* repo, QString text)
+QList<CoDiff*> CoDiff::diffsFromString(CoRepo* repo, QString text)
 {
 	QList<CoDiff*> diffs;
-	QRegExp diffHeader("
-			#^diff[ ]--git
-			[ ]a/(\\S+)[ ]b/(\\S+)\\n
-			(?:^similarity[ ]index[ ](\\d+)%\\n
-			 ^rename[ ]from[ ](\\S+)\\n
-			 ^rename[ ]to[ ](\\S+)(?:\\n|$))?
-			(?:^old[ ]mode[ ](\\d+)\\n
-			 ^new[ ]mode[ ](\\d+)(?:\\n|$))?
-			(?:^new[ ]file[ ]mode[ ](.+)(?:\\n|$))?
-			(?:^deleted[ ]file[ ]mode[ ](.+)(?:\\n|$))?
-			(?:^index[ ]([0-9A-Fa-f]+)
-			 \\.\\.([0-9A-Fa-f]+)[ ]?(.+)?(?:\\n|$))?"
+	QRegExp diffHeader(
+			"#^diff[ ]--git[ ]a/(\\S+)[ ]b/(\\S+)\\n(?:^similarity[ ]index[ ](\\d+)%\\n^rename[ ]from[ ](\\S+)\\n^rename[ ]to[ ](\\S+)(?:\\n|$))?(?:^old[ ]mode[ ](\\d+)\\n^new[ ]mode[ ](\\d+)(?:\\n|$))?(?:^new[ ]file[ ]mode[ ](.+)(?:\\n|$))?(?:^deleted[ ]file[ ]mode[ ](.+)(?:\\n|$))?(?:^index[ ]([0-9A-Fa-f]+)\\.\\.([0-9A-Fa-f]+)[ ]?(.+)?(?:\\n|$))?"
 			);
 	QString diff;
-	foreach(diff, ("\n"+text).split("\ndiff --git").removeFirst())
+	QStringList textSplit = ("\n"+text).split("\ndiff --git");
+	textSplit.removeFirst();
+	foreach(diff, textSplit)
 	{
 		if(diffHeader.indexIn(diff) != -1)
 			diffs.append(
 					new CoDiff(repo, diffHeader.cap(1), diffHeader.cap(2),
-						diffHeader.cap(10), diffHeader.(11), 
+						diffHeader.cap(10), diffHeader.cap(11), 
 						diffHeader.cap(6).toLong() || diffHeader.cap(9).toLong(),
 					   	diffHeader.cap(7).toLong() || diffHeader.cap(8).toLong() || diffHeader.cap(12).toLong(), 
 						diffHeader.cap(8).toLong(), diffHeader.cap(9).toLong(), 
 						diffHeader.cap(4), diffHeader.cap(5), 
-						diff.remove(diffHeader.indexIn(),diffHeader.matchedLength())
+						diff.remove(diffHeader.indexIn(diff),diffHeader.matchedLength())
 						)
 					);
 	}
 	return diffs;
-	//或的问题
-	//split 尽量不用正则表达式
-	//mode toLong
-	//split 切割开头部分
 }

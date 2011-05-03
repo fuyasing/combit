@@ -14,20 +14,22 @@
  */
 
 #include "cotag.h"
+#include "corepo.h"
+#include "cocommit.h"
 
-CoTag::CoTag(CoRepo* repo, QString name, CoCommit* commit):CoRef(repo, name, commit, CoRefType::Tag)
+CoTag::CoTag(CoRepo* repo, QString name, CoCommit* commit):CoRef(repo, name, commit, CoRef::Tag)
 {
 	m_name = name;
 	m_commit = commit;
 }
 
-CoTag::CoTag(CoRepo* repo, QString name, QString commit):CoRef(repo, name, commit, CoRefType::Tag)
+CoTag::CoTag(CoRepo* repo, QString name, QString commit):CoRef(repo, name, commit, CoRef::Tag)
 {
 	m_name = name;
 	m_commit = new CoCommit(repo, commit);
 }
 
-CoTag::CoTag(CoRepo* repo, QString name):CoRef(repo, name, CoRefType::tTag)
+CoTag::CoTag(CoRepo* repo, QString name):CoRef(repo, name, CoRef::Tag)
 {
 }
 
@@ -35,7 +37,7 @@ CoTag::~CoTag()
 {
 }
 
-static QList<CoTag*> CoTag::findAllTags(CoRepo* repo, CoKwargs opts)
+QList<CoTag*> CoTag::findAllTags(CoRepo* repo, CoKwargs opts)
 {	
 	QStringList cmd;
 	QList<CoTag*> tags;

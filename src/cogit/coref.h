@@ -18,7 +18,8 @@
 
 #include "cogit_global.h"
 
-#include <QString>
+class CoRepo;
+class CoCommit;
 
 //! 本类的功能：Git引用的抽象基类
 /*!
@@ -68,7 +69,7 @@ class COGIT_EXPORT CoRef
 
 		/*!获取指向该Git引用所属Repo的指针
 		 */
-		const CoRepo* repo() const;
+		CoRepo* repo() const;
 		/*! 获取Git引用的名字
 		*/
 		const QString name() const;
@@ -80,7 +81,7 @@ class COGIT_EXPORT CoRef
 		/*!获取该Git引用的类型*/
 		const CoRefType type() const;
 	
-	protect:
+	protected:
 		/*! 设置Git引用指向的commit
 		 * \param commit 要指向的commit
 		 * \return 如果设置成功,返回True

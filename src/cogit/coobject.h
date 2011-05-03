@@ -18,7 +18,7 @@
 
 #include "cogit_global.h"
 
-#include <QString>
+class CoRepo;
 
 //!	本类的功能：Git对象的抽象基类
 /*!
@@ -53,7 +53,7 @@ class COGIT_EXPORT CoObject
 
 		/*! 获取指向该Git对象所属Repo的指针
 		 */
-		const CoRepo* repo() const;
+		CoRepo* repo() const;
 
 		/*! 获取该Git对象的SHA串
 		 */

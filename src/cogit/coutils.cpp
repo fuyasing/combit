@@ -14,8 +14,11 @@
  */
 
 #include "coutils.h" 
+#include <QFileInfo>
+#include <QFile>
+#include <QDir>
 
-void CoUtils::touch(QString filename)
+bool CoUtils::touch(QString filename)
 {
 	QFile file(filename);
 	if(!file.open(QIODevice::WriteOnly))

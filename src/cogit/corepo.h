@@ -16,28 +16,15 @@
 #ifndef COREPO_H
 #define COREPO_H 
 
-#include <QList>
-
+#include "cogit_global.h"
 #include "cogit.h"
-#include "coobject.h"
-#include "coerrors.h"
-#include "coref.h"
 
-#include "coblob.h"
-#include "cocommit.h"
-#include "codiff.h"
-#include "coerrors.h"
-#include "cohead.h"
-#include "costats.h"
-#include "cotag.h"
-#include "cotree.h"
-#include "coutils.h"
+#include <QDate>
 
-class QObject;
-
-/*! Blame结果的封装
- */
-typedef QMultiHash<CoCommit*,int> CoBlames;
+class CoHead;
+class CoTag;
+class CoCommit;
+class QByteArray;
 
 //! 本类的功能：Git Repo的封装类
 /*! 本类是Git Repo的封装类，实现Git Repo的相关操作
@@ -86,7 +73,7 @@ class COGIT_EXPORT CoRepo
 		/*! 获得与CoRepo绑定的CoGit对象的指针
 		 * CoGit对象是与git程序交互的门户
 		 */
-		const CoGit* repoGit() const;
+		CoGit* repoGit() const;
 		
 		/*! 获得关于Repo的描述信息
 		 */
@@ -184,7 +171,7 @@ class COGIT_EXPORT CoRepo
 		 * \param opts python风格的额外参数字典
 		 * \attention 此函数为静态函数
 		 */
-		static CoRepo* initBare(QString path, bool mkdir=true, CoKwargs opts);
+		static CoRepo* initBare(QString path, bool mkdir=true, CoKwargs opts = CoKwargs());
 
 	private:
 

@@ -16,7 +16,12 @@
 #ifndef CODIFF_H
 #define CODIFF_H 
 
-#include "corepo.h"
+#include "cogit_global.h"
+
+#include <QList>
+
+class CoCommit;
+class CoRepo;
 
 //! 本类的功能：Git 两个commit对象差异信息的封装
 /*! 一个CoDiff对象存储一个文件在两个commit中的差异信息

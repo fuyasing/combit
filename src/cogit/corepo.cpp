@@ -14,6 +14,16 @@
  */
 
 #include "corepo.h"
+#include "cohead.h"
+#include "cotag.h"
+#include "cocommit.h"
+#include "coutils.h"
+
+#include <QByteArray>
+#include <QDir>
+#include <QStringList>
+#include <QFile>
+#include <QTextStream>
 
 CoRepo::CoRepo(QString path)
 {
@@ -75,7 +85,7 @@ const QString CoRepo::wdPath() const
 	return m_wdPath;
 }
 
-const CoGit* CoRepo::repoGit() const
+CoGit* CoRepo::repoGit() const
 {
 	return m_git;
 }
@@ -260,7 +270,7 @@ QByteArray* CoRepo::archiveTar(QString treeish, QString prefix)
 		opts.insert("prefix",prefix);
 	QByteArray* out = new QByteArray;
 	bool success = repoGit()->execute(cmd, opts, out);
-	if(sucess)
+	if(success)
 		return out;
 	return out;
 }

@@ -16,12 +16,10 @@
 #ifndef COTREE_H
 #define COTREE_H 
 
-#include "corepo.h"
+#include "cogit_global.h"
+#include "coobject.h"
 
-class QString;
-class QHash;
-class QList;
-class QStringList;
+class CoRepo;
 
 //! 本类的功能：Git Tree对象的封装
 /*!
@@ -56,28 +54,28 @@ class COGIT_EXPORT CoTree : public CoObject
 
 		/*! 获取Tree对象所包含Blob和Tree对象的个数
 		 */
-		int count() const;
+		int count();
 
 		/*! 判断是否含有name为<name>的Git对象
 		 * \param name 需要判断是否存在的Git对象的name属性值
 		 * \return 如果存在，返回True,否则返回False
 		 */
-		bool contains(QString &name) const;
+		bool contains(QString &name);
 
 		/*! 获取指向name为<name>的Git对象的指针
 		 * \param name name的值
 		 * \return 指向特定Git对象实例的CoObject型的指针
 		 */
-		const CoObject* item(QString &name) const;
+		const CoObject* item(QString &name);
 
 		/*! 获取该Tree对象包含的所有Git对象，以列表形式返回
 		 * \return 返回CoObject型指针的列表
 		 */
-		QList<CoObject*> items() const;
+		QList<CoObject*> items();
 
 		/*! 列出该Tree对象包含的所有项目的name
 		 */
-		QStringList itemNames() const;
+		QStringList itemNames();
 
 		/*! 获得id值为id的tree对象的内容,内容组织形式为:
 		 * Hash<name,object*>
@@ -85,7 +83,7 @@ class COGIT_EXPORT CoTree : public CoObject
 		 * \param id tree的id值
 		 * \attention 此函数为静态函数
 		 */
-		static QHash<QString,CoObject*> getContentsFromId(const CoRepo* repo, QString id);
+		static QHash<QString,CoObject*> getContentsFromId(CoRepo* repo, QString id);
 
 	private:
 

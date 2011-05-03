@@ -16,9 +16,7 @@
 #ifndef COACTOR_H
 #define COACTOR_H
 
-#include "corepo.h"
-
-class QString;
+#include "cogit_global.h"
 
 //! 本类的功能：储存Git Repo代码贡献者信息的类
 /*!
@@ -29,7 +27,11 @@ class COGIT_EXPORT CoActor
 {
 	
 	public:
-	
+
+		/*! 参数列表为空的构造函数
+		 */
+		explicit CoActor();
+
 		/*! 构造函数
 		 * \param name 姓名
 		 * \param email 电子邮件地址
@@ -41,6 +43,11 @@ class COGIT_EXPORT CoActor
 		 * \param sign 格式化的签名
 		 */
 		explicit CoActor(QString sign);
+
+		/*! 构造函数，根据另一个CoActor对象拷贝生成
+		 * \param other 另一个CoActor对象
+		 */
+		CoActor(const CoActor &other);
 
 		/*! 析构函数
 		 */

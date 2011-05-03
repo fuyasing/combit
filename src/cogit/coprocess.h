@@ -16,9 +16,13 @@
 #ifndef COPROCESS_H
 #define COPROCESS_H
 
-#include <QProcess>
-
 #include "cogit_global.h"
+#include "coerrors.h"
+
+#include <QProcess>
+#include <QStringList>
+
+class QByteArray;
 class CoGit;
 
 //! 本类的功能：实现对子进程的控制
@@ -46,9 +50,9 @@ class CoProcess : public QProcess
 		bool runSync(QStringList cmd, QByteArray* stdOut, QByteArray* stdError, QString inStream);
 
 		
-	public signal:
+	signals:
 
-		void exceptionOccur(CoError::ErrorType error);
+		void exceptionOccur(CoErrors::ErrorType error);
 
 
 	public slots:
@@ -80,7 +84,7 @@ class CoProcess : public QProcess
 		bool canceling;
 		bool isErrorExit;
 		bool busy;
-}
+};
 
 #endif
 

@@ -16,9 +16,11 @@
 #ifndef COSTATS_H
 #define COSTATS_H 
 
-#include "corepo.h"
+#include "cogit_global.h"
 
-//! 本类的功能：存储Stat信息的基础单元
+class CoRepo;
+
+//a! 本类的功能：存储Stat信息的基础单元
 /*! 字典(或称Hash)数据结构，包含4个键值对：
  * deletions = 删除的行数
  * insertions = 插入的行数
@@ -115,20 +117,20 @@ class COGIT_EXPORT CoStats
 
 		/*! 获取所属Repo
 		 */
-		const CoRepo* repo() const;
+		CoRepo* repo() const;
 
 		/*! 获取关于整个Repo的CoStatDict
 		 */
-		const CoStatDict total() const;
+		CoStatDict total() const;
 
 		/*! 获取一个Hash表，键为有改动的文件名(包括路径)，值为此文件对应的CoStatDict
 		 */
-		const QHash<QString,CoStatDict> files() const;
+		QHash<QString,CoStatDict> files() const;
 
 		/*! 是否内容为空(即没有差别)
 		 * \return 如果为空，返回True
 		 */
-		const bool isClean() const;
+		const bool isClean();
 		
 	private:
 		

@@ -16,11 +16,13 @@
 #ifndef COGIT_H
 #define COGIT_H
 
-#include "coprocess.h"
+#include "cogit_global.h"
+#include "coerrors.h"
 
-#include <QString>
+#include <QStringList>
+#include <QObject>
 
-class QObject;
+class QByteArray;
 
 //! 本类的功能：实现与Git程序的交互
 /*! 本类是对Git程序调用的封装，处理调用，输入输出
@@ -71,10 +73,15 @@ class COGIT_EXPORT CoGit : public QObject
 		 */
 		void cancel();
 
-	public signal:
+	signals:
 
 		void cancelProcess();
-		void exceptionOccur(CoError::ErrorType error);
+		void exceptionOccur(CoErrors::ErrorType error);
+
+
+	private slots:
+
+		void onExcuteExceptionOccur(CoErrors::ErrorType error);
 
 
 	private:
@@ -85,9 +92,6 @@ class COGIT_EXPORT CoGit : public QObject
 		bool m_hasProcess;
 
 
-	private slots:
-
-		void onExcuteExceptionOccur(CoError::ErrorType error);
 };
 
 #endif // COGIT_H

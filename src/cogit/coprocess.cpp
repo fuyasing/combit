@@ -13,9 +13,10 @@
  *	\date 2011/03/01
  */
 
-#include <QTime>
-
 #include "coprocess.h"
+#include "cogit.h"
+
+#include <QByteArray>
 
 CoProcess::CoProcess(CoGit *git,const QString& wd):QProcess(git)
 {
@@ -25,7 +26,7 @@ CoProcess::CoProcess(CoGit *git,const QString& wd):QProcess(git)
 	m_inStream = "";
 	canceling = isWinShell = isErrorExit = false;
 }
-bool runSync(QStringList cmd, QByteArray* stdOut, QByteArray* stdError, QString inStream)
+bool CoProcess::runSync(QStringList cmd, QByteArray* stdOut, QByteArray* stdError, QString inStream)
 {
 	m_cmd = cmd;
 	m_stdOut = stdOut;
@@ -63,9 +64,9 @@ void CoProcess::setupSignals()
 			this,SLOT(onFinished(int,QProcess::ExitStatus)));
 }
 
-void CoProcess::sendErrorMsg(bool notStarted, QString errDesc)
+void CoProcess::sendExceptionSignal()
 {
-	emit exceptionOccur(CoError::GitCommandError);
+	emit exceptionOccur(CoErrors::GitCommandError);
 }
 
 bool CoProcess::startProcess(QStringList cmd)
@@ -110,7 +111,7 @@ void CoProcess::onReadyReadStandardError()
 	return;
 }
 
-void CoProcess::onFinished(int exitCode,QProcess::ExitStatus)
+void CoProcess::onFinished(int exitCode,QProcess::ExitStatus exitStatus)
 {
 	isErrorExit = (exitStatus != QProcess::NormalExit)
 		|| (exitCode !=0 && isWinShell)

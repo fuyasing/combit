@@ -16,7 +16,13 @@
 #ifndef COTAG_H
 #define COTAG_H 
 
-#include "corepo.h"
+#include "cogit_global.h"
+#include "coref.h"
+
+#include <QStringList>
+
+class CoRepo;
+class CoCommit;
 
 //! 本类的功能：Git tag引用的封装
 /*!
@@ -57,10 +63,10 @@ class COGIT_EXPORT CoTag : public CoRef
 		 * \param opts git for-each-ref命令可接受的附加参数
 		 */
 		static QList<CoTag*> findAllTags(CoRepo* repo, CoKwargs opts=CoKwargs());
-	
+
 	private:
-			QString m_name;
+		QString m_name;
 		CoCommit* m_commit;
-}
+};
 
 #endif

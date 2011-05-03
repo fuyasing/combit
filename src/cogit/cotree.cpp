@@ -14,6 +14,11 @@
  */
 
 #include "cotree.h" 
+#include "corepo.h"
+#include "coblob.h"
+
+#include <QStringList>
+#include <QRegExp>
 
 CoTree::CoTree(CoRepo *repo, QString id, qint32 mode, QString name):CoObject(repo,id,CoObject::Tree)
 {
@@ -37,42 +42,42 @@ const QString CoTree::name() const
 	return m_name;
 }
 
-int CoTree::count() const
+int CoTree::count()
 {
 	if(!m_isInited)
 		initContents();
 	return m_contents.size();
 }
 
-bool CoTree::contains(QString &name) const
+bool CoTree::contains(QString &name)
 {
 	if(!m_isInited)
 		initContents();
 	return m_contents.contains(name);
 }
 
-const CoObject* CoTree::item(QString &name) const
+const CoObject* CoTree::item(QString &name)
 {
 	if(!m_isInited)
 		initContents();
 	return m_contents.value(name);
 }
 
-QList<CoObject*> CoTree::items() const
+QList<CoObject*> CoTree::items()
 {
 	if(!m_isInited)
 		initContents();
 	return m_contents.values();
 }
 
-QStringList CoTree::itemNames() const
+QStringList CoTree::itemNames()
 {
 	if(!m_isInited)
 		initContents();
 	return m_contents.keys();
 }
 
-static QHash<QString, CoObject*> CoTree::getContentsFromId(const CoRepo* repo, QString id)
+QHash<QString, CoObject*> CoTree::getContentsFromId(CoRepo* repo, QString id)
 {
 	QHash<QString, CoObject*> contents;
 	QStringList cmd;
@@ -85,8 +90,18 @@ static QHash<QString, CoObject*> CoTree::getContentsFromId(const CoRepo* repo, Q
 		foreach(str, out.split(QRegExp("\\n")));
 		{
 			str = str.trimmed();
-			CoObject * obj = CoObject::getObjectFromString(repo, str);
-			contents.insert(obj->name(),obj);
+			CoObject * obj = CoObject::objectFromString(repo, str);
+			switch(obj->type())
+			{
+				case CoObject::Blob:
+					contents.insert(static_cast<CoBlob*>(obj)->name(),obj);
+					break;
+				case CoObject::Tree:
+					contents.insert(static_cast<CoTree*>(obj)->name(),obj);
+					break;
+				default:
+					break;
+			}
 		}
 	}
 	return contents;
@@ -95,17 +110,27 @@ static QHash<QString, CoObject*> CoTree::getContentsFromId(const CoRepo* repo, Q
 void CoTree::initContents()
 {
 	QStringList cmd;
-	cmd << "ls-tree" << id;
+	cmd << "ls-tree" << id();
 	QString out;
-	bool success = repo->repoGit()->execute(cmd, CoKwargs(), &out);
+	bool success = repo()->repoGit()->execute(cmd, CoKwargs(), &out);
 	if(success)
 	{
 		QString str;
 		foreach(str, out.split(QRegExp("\\n")));
 		{
 			str = str.trimmed();
-			CoObject * obj = CoObject::getObjectFromString(repo, str);
-			m_contents.insert(obj->name(),obj);
+			CoObject * obj = CoObject::objectFromString(repo(), str);
+			switch(obj->type())
+			{
+				case CoObject::Blob:
+					m_contents.insert(static_cast<CoBlob*>(obj)->name(),obj);
+					break;
+				case CoObject::Tree:
+					m_contents.insert(static_cast<CoTree*>(obj)->name(),obj);
+					break;
+				default:
+					break;
+			}
 			m_isInited = true;
 		}
 	}

@@ -13,8 +13,15 @@
  *	\date 2011/03/01
  */
 
-#include "coactor.h" 
+#include "coactor.h"
+
 #include <QRegExp>
+
+CoActor::CoActor()
+{
+	m_name = "";
+	m_email = "";
+}
 
 CoActor::CoActor(QString name , QString email)
 {
@@ -43,7 +50,7 @@ CoActor::CoActor(QString sign)
 	}
 }
 
-CoActor::CoActor(CoActor other)
+CoActor::CoActor(const CoActor &other)
 {
 	m_name = other.name();
 	m_email = other.email();
@@ -53,15 +60,15 @@ CoActor::~CoActor()
 {
 }
 
-QString CoActor::name()
+const QString CoActor::name() const
 {
 	return m_name;
 }
-QString CoActor::email()
+const QString CoActor::email() const
 {
 	return m_email;
 }
-QString CoActor::sign()
+const QString CoActor::sign() const
 {
 	return QString("%1 <%2>").arg(m_name).arg(m_email);
 }

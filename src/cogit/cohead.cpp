@@ -14,20 +14,22 @@
  */
 
 #include "cohead.h"
+#include "cocommit.h"
+#include "corepo.h"
 
-CoHead::CoHead(CoRepo* repo, QString name, CoCommit* commit):CoRef(repo, name, commit, CoRefType::Head)
+CoHead::CoHead(CoRepo* repo, QString name, CoCommit* commit):CoRef(repo, name, commit, CoRef::Head)
 {
 	m_name = name;
 	m_commit = commit;
 }
 
-CoHead::CoHead(CoRepo* repo, QString name, QString commit):CoRef(repo, name, commit, CoRefType::Head)
+CoHead::CoHead(CoRepo* repo, QString name, QString commit):CoRef(repo, name, commit, CoRef::Head)
 {
 	m_name = name;
 	m_commit = new CoCommit(repo, commit);
 }
 
-CoHead::CoHead(CoRepo* repo,QString name):CoRef(repo, name, CoRefType::Head)
+CoHead::CoHead(CoRepo* repo,QString name):CoRef(repo, name, CoRef::Head)
 {
 }
 
@@ -38,10 +40,12 @@ CoHead::~CoHead()
 
 const CoCommit* CoHead::update()
 {
-	CoKwargs opts.insert("hash","");
-	QStringList cmd << "show-ref" << "refs/heads/"+name();
+	CoKwargs opts;
+	opts.insert("hash","");
+	QStringList cmd;
+	cmd<< "show-ref" << "refs/heads/" + name();
 	QString out;
-	bool success = repo->repoGit()->execute(cmd, opts, &out);
+	bool success = repo()->repoGit()->execute(cmd, opts, &out);
 	if(success)
 	{
 		setCommit(out.trimmed());
@@ -49,7 +53,7 @@ const CoCommit* CoHead::update()
 	return commit();
 }
 
-static QList<CoHead*> CoHead::findAllHeads(CoRepo* repo, CoKwargs opts)
+QList<CoHead*> CoHead::findAllHeads(CoRepo* repo, CoKwargs opts)
 {
 	QStringList cmd;
 	QList<CoHead*> heads;

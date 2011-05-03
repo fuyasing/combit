@@ -17,8 +17,6 @@
 #ifndef COERRORS_H
 #define COERRORS_H 
 
-#include <QtCore>
-
 namespace CoErrors{
 
 	enum ErrorType{

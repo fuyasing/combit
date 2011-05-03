@@ -14,6 +14,9 @@
  */
 
 #include "cogit.h"
+#include "coprocess.h"
+
+#include <QByteArray>
 
 CoGit::CoGit(QString gitWdDir)
 {
@@ -26,7 +29,7 @@ CoGit::~CoGit()
 bool CoGit::execute(QStringList cmd, CoKwargs opts, QString* stdOut, QString* stdError, QString inStream, bool withExceptionsEmit)
 {
 	QByteArray rawStdOut, rawStdError;
-	bool ret = execute(cmd,opts,stdOut?&rawStdout:NULL,stdError?&rawStdError:NULL,inStream,withExceptionsEmit);
+	bool ret = execute(cmd,opts,stdOut?&rawStdOut:NULL,stdError?&rawStdError:NULL,inStream,withExceptionsEmit);
 	if(stdOut)
 		*stdOut = rawStdOut;
 	if(stdError)
@@ -34,7 +37,7 @@ bool CoGit::execute(QStringList cmd, CoKwargs opts, QString* stdOut, QString* st
 	return ret;
 }
 
-bool CoGit::execute(QStringList cmd, CoKwargs opts, QByteArray* stdOut, QByteArray* stdError, QString inStream, bool withExceptionsEmit);
+bool CoGit::execute(QStringList cmd, CoKwargs opts, QByteArray* stdOut, QByteArray* stdError, QString inStream, bool withExceptionsEmit)
 {
 	//一次只允许执行一个子进程
 	if(m_hasProcess)
@@ -43,7 +46,7 @@ bool CoGit::execute(QStringList cmd, CoKwargs opts, QByteArray* stdOut, QByteArr
 	CoProcess p(this, m_gitWdDir);
 	connect(this,SIGNAL(cancelProcess()),&p,SLOT(onCancel()));
 	if(withExceptionsEmit)
-		connect(&p,SIGNAL(exceptionOccur(CoError::ErrorType)),this,SLOT(onExcuteExceptionOccur(CoError::ErrorType)));
+		connect(&p,SIGNAL(exceptionOccur(CoErrors::ErrorType)),this,SLOT(onExcuteExceptionOccur(CoErrors::ErrorType)));
 	if(!opts.isEmpty())
 		cmd += transformKwargs(opts);
 	cmd.prepend("git");
@@ -52,7 +55,7 @@ bool CoGit::execute(QStringList cmd, CoKwargs opts, QByteArray* stdOut, QByteArr
 	return ret;
 }
 
-void CoGit::onExcuteExcptionOccur(CoError::ErrorType error)
+void CoGit::onExcuteExceptionOccur(CoErrors::ErrorType error)
 {
 	emit exceptionOccur(error);
 }
@@ -64,24 +67,25 @@ void CoGit::cancel()
 
 QStringList CoGit::transformKwargs(CoKwargs opts)
 {
-	QStringList args();
+	QStringList args;
 	CoKwargs::const_iterator i = opts.constBegin();
 	while(i != opts.constEnd())
 	{
 		if(i.key().size() == 1)
 		{
 			if(i.value().isEmpty())
-				args << QString("-%1").arg(i.key());
+				args.append(QString("-%1").arg(i.key()));
 			else
-				args << QString("-%1%2").arg(i.key()).arg(i.value());
+				args.append(QString("-%1 %2").arg(i.key()).arg(i.value()));
 		}
 		else
 		{
 			if(i.value().isEmpty())
-				args << QString("--%1").arg(CoUtils::dashify(i.key()));
+				args.append(QString("--%1").arg(i.key()));
 			else
-				args << QString("--%1=%2").arg(CoUtils::dashify(i.key())).arg(i.value());
+				args.append(QString("--%1=%2").arg(i.key()).arg(i.value()));
 		}
+		i++;
 	}
 	return args;
 }

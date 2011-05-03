@@ -14,6 +14,12 @@
  */
 
 #include "coobject.h"
+#include "corepo.h"
+#include "cotree.h"
+#include "coblob.h"
+
+#include <QRegExp>
+#include <QStringList>
 
 CoObject::CoObject(CoRepo *repo, QString id, CoObject::CoObjType type)
 {
@@ -25,7 +31,7 @@ CoObject::~CoObject()
 {
 }
 
-const CoRepo* CoObject::repo() const
+CoRepo* CoObject::repo() const
 {
 	return m_repo;
 }
@@ -35,12 +41,12 @@ const QString CoObject::id() const
 	return m_id;
 }
 
-const CoObject::CoObjType type() const
+const CoObject::CoObjType CoObject::type() const
 {
 	return m_type;
 }
 
-CoObject* CoObject::getObjectFromString(CoRepo *repo, QString text)
+CoObject* CoObject::objectFromString(CoRepo *repo, QString text)
 {
 	QStringList textSplit = text.split(QRegExp("\\s+"));
 	CoObject *obj;

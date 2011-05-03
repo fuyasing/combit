@@ -16,7 +16,7 @@
 #ifndef COTREE_H
 #define COTREE_H 
 
-#include "corepo.h"
+#include "cogit_global.h"
 
 namespace CoUtils
 {

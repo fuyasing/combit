@@ -16,7 +16,13 @@
 #ifndef COHEAD_H
 #define COHEAD_H 
 
-#include "corepo.h"
+#include "cogit_global.h"
+#include "coref.h"
+
+#include <QStringList>
+
+class CoCommit;
+class CoRepo;
 
 //! 本类的功能：Git Head引用的封装
 /*!

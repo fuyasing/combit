@@ -13,7 +13,12 @@
  *	\date 2011/03/01
  */
 
-#include "coblob.h" 
+#include "coblob.h"
+#include "corepo.h"
+#include "cocommit.h"
+
+#include <QFileInfo>
+#include <QRegExp>
 
 CoBlob::CoBlob(CoRepo *repo, QString id, qint32 mode, QString name):CoObject(repo,id,CoObject::Blob)
 {
@@ -37,7 +42,7 @@ const QString CoBlob::name() const
 	return m_name;
 }
 
-const int CoBlob::size() const
+const int CoBlob::size()
 {
 	if(m_size < 0)
 	{
@@ -53,7 +58,7 @@ const int CoBlob::size() const
 	return m_size;
 }
 
-const QString CoBlob::data() const
+const QString CoBlob::data()
 {
 	if(m_data.isEmpty())
 	{
@@ -82,7 +87,7 @@ const QString CoBlob::mimeType() const
 	//TODO
 }
 
-static const QString CoBlob::getDataFromId(const CoRepo* repo, QString id)
+const QString CoBlob::getDataFromId(CoRepo* repo, QString id)
 {
 	QStringList cmd;
 	cmd << "cat-file" << id;
@@ -94,7 +99,7 @@ static const QString CoBlob::getDataFromId(const CoRepo* repo, QString id)
 		return out;
 }
 
-const CoBlames CoBlob::blame(const CoRepo* repo,const CoCommit* commit,const QString file)
+const CoBlames CoBlob::blame(CoRepo* repo,const CoCommit* commit,const QString file)
 {
 	QStringList cmd;
 	cmd << "cat-file" << commit->id() << "--" << file;
@@ -118,7 +123,7 @@ const CoBlames CoBlob::blame(const CoRepo* repo,const CoCommit* commit,const QSt
 			QRegExp recl("^([0-9A-Fa-f]{40})(\\d+)(\\d+)$");
 			if(re1cl.indexIn(str)!=-1)
 			{
-				last_commit = new CoCommit(this->repo(),re1cl.cap(1));
+				last_commit = new CoCommit(repo,re1cl.cap(1));
 				blame.insert(last_commit,re1cl.cap(3).toInt());
 			}
 			else if(recl.indexIn(str)!=-1)

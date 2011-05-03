@@ -16,9 +16,13 @@
 #ifndef COBLOB_H
 #define COBLOB_H 
 
-#include "corepo.h"
+#include "cogit_global.h"
+#include "coobject.h"
 
-class QHash;
+#include <QStringList>
+
+class CoRepo;
+class CoCommit;
 
 //! 本类的功能：Git Blob对象的封装
 /*!
@@ -54,13 +58,13 @@ class COGIT_EXPORT CoBlob : public CoObject
 		/*! 获取Blob对象的大小（单位byte）
 		 * \note 第一次调用后，该值将被缓存
 		 */
-		const int size() const;
+		const int size();
 
 		/*! 获取Blob对象的内容，如文本内容
 		 *  内容存储在QString型的字符串中
 		 * \note 第一次调用后，该值将被缓存
 		 */
-		const QString data() const;
+		const QString data();
 
 		/*! 获取Blob对象的mime type 信息
 		 * \note 第一次调用后，该值将被缓存
@@ -69,7 +73,6 @@ class COGIT_EXPORT CoBlob : public CoObject
 		const QString mimeType() const;
 
 		/*! 获取Blob对象对应文件的文件名(不含扩展名)
-		 * \note 第一次调用后，该值将被缓存
 		 */
 		const QString baseName() const;
 
@@ -78,12 +81,12 @@ class COGIT_EXPORT CoBlob : public CoObject
 		 * \param id blob的id值
 		 * \attention 此函数为静态函数
 		 */
-		static const QString getDataFromId(const CoRepo* repo, QString id);
+		static const QString getDataFromId(CoRepo* repo, QString id);
 
 		/*! 获取给定文件相对于特定commit的Blame信息
 		 * \return 存储在CoBlames类型中的blame信息
 		 */
-		static const CoBlames blame(const CoRepo* repo,const CoCommit* commit,const QString file);
+		static const CoBlames blame(CoRepo* repo,const CoCommit* commit,const QString file);
 
 
 	private:
