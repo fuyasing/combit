@@ -37,7 +37,7 @@ class COGIT_EXPORT CoGit : public QObject
 		/*! 构造函数
 		 * \param gitWdDir git的顶级工作目录路径
 		 */
-		explicit CoGit(QString gitWdDir="");
+		explicit CoGit(QString gitWdDir="", QString gitBinary = "git");
 
 		/*! 析构函数
 		 */
@@ -56,7 +56,7 @@ class COGIT_EXPORT CoGit : public QObject
 		 * \param withExceptionsEmit 如果为真，将发送执行异常相关的信号
 		 * \return 如果Git执行正常结束，返回True，否则返回False
 		 */
-		bool execute(QStringList cmd, CoKwargs opts, QString* stdOut, QString* stdError = NULL, QString inStream = "", bool withExceptionsEmit = false);
+		bool execute(QStringList cmd, CoKwargs opts, QString* stdOut, QString* stdError, QString inStream = "", bool withExceptionsEmit = false);
 
 		/*! 在子进程中调用Git程序
 		 * \param cmd 不包括"git"在内的命令字符串列表
@@ -67,7 +67,7 @@ class COGIT_EXPORT CoGit : public QObject
 		 * \param withExceptionsEmit 如果为真，将发送执行异常相关的信号
 		 * \return 如果Git执行正常结束，返回True，否则返回False
 		 */
-		bool execute(QStringList cmd, CoKwargs opts, QByteArray* stdOut, QByteArray* stdError = NULL, QString inStream = "", bool withExceptionsEmit = false);
+		bool execute(QStringList cmd, CoKwargs opts, QByteArray* stdOut, QByteArray* stdError, QString inStream = "", bool withExceptionsEmit = false);
 
 		/*! 向pid号为pid的子进程发送终止信号
 		 * \param pid 子进程的pid号
@@ -90,6 +90,7 @@ class COGIT_EXPORT CoGit : public QObject
 		QStringList transformKwargs(CoKwargs opts);
 
 		QString m_gitWdDir;
+		QString m_gitBin;
 		bool m_hasProcess;
 
 

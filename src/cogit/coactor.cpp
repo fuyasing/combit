@@ -18,12 +18,6 @@
 
 #include <QRegExp>
 
-CoActor::CoActor()
-{
-	m_name = "";
-	m_email = "";
-}
-
 CoActor::CoActor(QString name , QString email)
 {
 	m_name = name;
@@ -49,12 +43,6 @@ CoActor::CoActor(QString sign)
 		m_name = sign;
 		m_email = "";
 	}
-}
-
-CoActor::CoActor(const CoActor &other)
-{
-	m_name = other.name();
-	m_email = other.email();
 }
 
 CoActor::~CoActor()

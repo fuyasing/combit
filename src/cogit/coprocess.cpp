@@ -35,8 +35,12 @@ bool CoProcess::runSync(QStringList cmd, QByteArray* stdOut, QByteArray* stdErro
 	m_inStream = inStream;
 	if(m_stdOut)
 		m_stdOut->clear();
+	else
+		return false;
 	if(m_stdError)
 		m_stdError->clear();
+	else
+		return false;
 	if(!m_inStream.isEmpty())
 		setStandardInputFile(m_inStream);
 
@@ -57,12 +61,12 @@ bool CoProcess::runSync(QStringList cmd, QByteArray* stdOut, QByteArray* stdErro
 
 void CoProcess::setupSignals()
 {
-	connect(this, SIGNAL(readyReadStandarOutput()),
-			this,SLOT(onReadyReadStandardOutput()));
-	connect(this,SIGNAL(readyReadStandardError()),
-			this,SLOT(onReadyReadStandardError()));
+	connect(this, SIGNAL(readyReadStandardOutput()),
+			this, SLOT(onReadyReadStandardOutput()));
+	connect(this, SIGNAL(readyReadStandardError()),
+			this, SLOT(onReadyReadStandardError()));
 	connect(this, SIGNAL(finished(int,QProcess::ExitStatus)),
-			this,SLOT(onFinished(int,QProcess::ExitStatus)));
+			this, SLOT(onFinished(int,QProcess::ExitStatus)));
 }
 
 void CoProcess::sendExceptionSignal()
@@ -98,8 +102,7 @@ void CoProcess::onReadyReadStandardOutput()
 {
 	if(canceling)
 		return;
-	if(m_stdOut)
-		m_stdOut->append(readAllStandardOutput());
+	m_stdOut->append(readAllStandardOutput());
 	return;
 }
 
@@ -107,8 +110,7 @@ void CoProcess::onReadyReadStandardError()
 {
 	if(canceling)
 		return;
-	if(m_stdError)
-		m_stdError->append(readAllStandardError());
+	m_stdError->append(readAllStandardError());
 	return;
 }
 

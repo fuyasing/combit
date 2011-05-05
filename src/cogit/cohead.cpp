@@ -56,6 +56,8 @@ const CoCommit* CoHead::update()
 
 QList<CoHead*> CoHead::findAllHeads(CoRepo* repo, CoKwargs opts)
 {
+	if(!repo->isRepo())
+		return QList<CoHead*>();
 	QStringList cmd;
 	QList<CoHead*> heads;
 	cmd << "for-each-ref" << "refs/heads";

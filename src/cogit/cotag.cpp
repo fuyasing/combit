@@ -39,7 +39,9 @@ CoTag::~CoTag()
 }
 
 QList<CoTag*> CoTag::findAllTags(CoRepo* repo, CoKwargs opts)
-{	
+{
+	if(!repo->isRepo())
+		return QList<CoTag*>();
 	QStringList cmd;
 	QList<CoTag*> tags;
 	cmd << "for-each-ref" << "refs/tags";

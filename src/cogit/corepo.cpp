@@ -28,7 +28,10 @@
 
 CoRepo::CoRepo(QString path)
 {
-	m_gitPath = "";
+	m_isRepo = m_isBare = false;
+	m_gitPath = m_wdPath = "";
+	m_git = NULL;
+
 	QDir ePath(path);
 	if(ePath.exists())
 	{
@@ -55,15 +58,18 @@ CoRepo::CoRepo(QString path)
 		}
 	}
 	if(!m_gitPath.isEmpty())
+	{
 		m_isRepo = true;
+		m_git = new CoGit(m_wdPath);
+	}
 	else
 		m_isRepo = false;
-	m_git = new CoGit(m_wdPath);
 }
 
 CoRepo::~CoRepo()
 {
-	delete m_git;
+	if(m_git)
+		delete m_git;
 }
 
 const bool CoRepo::isRepo() const
@@ -93,6 +99,9 @@ CoGit* CoRepo::repoGit() const
 
 QString CoRepo::getDescription() const
 {
+	if(!m_isRepo)
+		return "";
+
 	QString filename = m_gitPath + "/description";
 	QFile file(filename);
 	if(!file.open(QIODevice::ReadOnly))
@@ -108,6 +117,9 @@ QString CoRepo::getDescription() const
 
 void CoRepo::setDescription(QString descr)
 {
+	if(!m_isRepo)
+		return;
+
 	QString filename = m_gitPath + "/description";
 	QFile file(filename);
 	if(!file.open(QIODevice::WriteOnly))
@@ -120,12 +132,18 @@ void CoRepo::setDescription(QString descr)
 
 bool CoRepo::isDaemonExport()
 {
+	if(!m_isRepo)
+		return false;
+
 	QString filename = m_gitPath + "/git-daemon-export-ok";
 	return QFile::exists(filename);
 }
 
 void CoRepo::setDaemonExport(bool is_daemon_export)
 {
+	if(!m_isRepo)
+		return;
+
 	QString filename = m_gitPath + "/git-daemon-export-ok";
 	if(is_daemon_export && !isDaemonExport())
 		CoUtils::touch(filename);
@@ -135,6 +153,9 @@ void CoRepo::setDaemonExport(bool is_daemon_export)
 
 QStringList CoRepo::getAlternates()
 {
+	if(!m_isRepo)
+		return QStringList();
+
 	QString alterPath = m_gitPath + "/objects" + "/info" + "/alternates";
 	if(QFile::exists(alterPath))
 	{
@@ -158,6 +179,9 @@ QStringList CoRepo::getAlternates()
 
 void CoRepo::setAlternates(QStringList paths)
 {
+	if(!m_isRepo)
+		return;
+
 	QString alterPath = m_gitPath + "/objects" + "/info" + "/alternates";
 	if(paths.isEmpty())
 	{
@@ -182,6 +206,9 @@ void CoRepo::setAlternates(QStringList paths)
 
 bool CoRepo::isDirty()
 {
+	if(!m_isRepo)
+		return false;
+
 	if(m_isBare)
 	{
 		return false;
@@ -199,6 +226,9 @@ bool CoRepo::isDirty()
 
 QString CoRepo::activeBranch()
 {
+	if(!m_isRepo)
+		return "";
+
 	QStringList cmd;
 	cmd << "symbolic-ref" << "HEAD";
 	QString out,branch;

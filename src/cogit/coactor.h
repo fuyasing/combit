@@ -29,26 +29,17 @@ class COGIT_EXPORT CoActor
 	
 	public:
 
-		/*! 参数列表为空的构造函数
-		 */
-		explicit CoActor();
-
 		/*! 构造函数
 		 * \param name 姓名
 		 * \param email 电子邮件地址
 		 */
-		explicit CoActor(QString name , QString email);
+		explicit CoActor(QString name = "" , QString email = "");
 
 		/*! 构造函数，根据格式化的签名抽取name和email的信息并加以储存
 		 * sign的格式为: Michael Ding <yandy@combinz.com>
 		 * \param sign 格式化的签名
 		 */
 		explicit CoActor(QString sign);
-
-		/*! 构造函数，根据另一个CoActor对象拷贝生成
-		 * \param other 另一个CoActor对象
-		 */
-		CoActor(const CoActor &other);
 
 		/*! 析构函数
 		 */

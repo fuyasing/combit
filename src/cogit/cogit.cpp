@@ -29,6 +29,8 @@ CoGit::~CoGit()
 }
 bool CoGit::execute(QStringList cmd, CoKwargs opts, QString* stdOut, QString* stdError, QString inStream, bool withExceptionsEmit)
 {
+	if(m_gitWdDir.isEmpty())
+		return false;
 	QByteArray rawStdOut, rawStdError;
 	bool ret = execute(cmd,opts,stdOut?&rawStdOut:NULL,stdError?&rawStdError:NULL,inStream,withExceptionsEmit);
 	if(stdOut)
@@ -40,6 +42,10 @@ bool CoGit::execute(QStringList cmd, CoKwargs opts, QString* stdOut, QString* st
 
 bool CoGit::execute(QStringList cmd, CoKwargs opts, QByteArray* stdOut, QByteArray* stdError, QString inStream, bool withExceptionsEmit)
 {
+	if(m_gitWdDir.isEmpty())
+		return false;
+	if(! (stdOut && stdError))
+		return false;
 	//一次只允许执行一个子进程
 	if(m_hasProcess)
 		return false;
@@ -50,7 +56,7 @@ bool CoGit::execute(QStringList cmd, CoKwargs opts, QByteArray* stdOut, QByteArr
 		connect(&p,SIGNAL(exceptionOccur(CoErrors::ErrorType)),this,SLOT(onExcuteExceptionOccur(CoErrors::ErrorType)));
 	if(!opts.isEmpty())
 		cmd += transformKwargs(opts);
-	cmd.prepend("git");
+	cmd.prepend(m_gitBin);
 	bool ret = p.runSync(cmd,stdOut,stdError,inStream);
 	m_hasProcess = false;
 	return ret;
