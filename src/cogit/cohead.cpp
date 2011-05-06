@@ -18,16 +18,15 @@
 #include "cocommit.h"
 #include "corepo.h"
 
+CoHead::CoHead():CoRef(NULL,"",NULL,CoRef::Head)
+{
+}
 CoHead::CoHead(CoRepo* repo, QString name, CoCommit* commit):CoRef(repo, name, commit, CoRef::Head)
 {
-	m_name = name;
-	m_commit = commit;
 }
 
 CoHead::CoHead(CoRepo* repo, QString name, QString commit):CoRef(repo, name, commit, CoRef::Head)
 {
-	m_name = name;
-	m_commit = new CoCommit(repo, commit);
 }
 
 CoHead::CoHead(CoRepo* repo,QString name):CoRef(repo, name, CoRef::Head)
@@ -39,14 +38,21 @@ CoHead::~CoHead()
 
 }
 
+const bool CoHead::isValid() const
+{
+	return CoRef::isValid();
+}
+
 const CoCommit* CoHead::update()
 {
+	if(!isValid())
+		return NULL;
 	CoKwargs opts;
 	opts.insert("hash","");
 	QStringList cmd;
 	cmd<< "show-ref" << "refs/heads/" + name();
-	QString out;
-	bool success = repo()->repoGit()->execute(cmd, opts, &out);
+	QString out, error;
+	bool success = repo()->repoGit()->execute(cmd, opts, &out, &error);
 	if(success)
 	{
 		setCommit(out.trimmed());
@@ -56,15 +62,15 @@ const CoCommit* CoHead::update()
 
 QList<CoHead*> CoHead::findAllHeads(CoRepo* repo, CoKwargs opts)
 {
-	if(!repo->isRepo())
+	if(repo == NULL || !repo->isRepo())
 		return QList<CoHead*>();
 	QStringList cmd;
 	QList<CoHead*> heads;
 	cmd << "for-each-ref" << "refs/heads";
 	opts.insert("sort","*authoreddate");
 	opts.insert("format","%(refname) %(objectname)");
-	QString out;
-	bool success = repo->repoGit()->execute(cmd, opts, &out);
+	QString out, error;
+	bool success = repo->repoGit()->execute(cmd, opts, &out, &error);
 	if(success)
 	{
 		QString line, commit, name;
@@ -76,6 +82,9 @@ QList<CoHead*> CoHead::findAllHeads(CoRepo* repo, CoKwargs opts)
 				name = lineSplit.first().split('/').last();
 				heads.append(new CoHead(repo, name, commit));
 		}
+	}
+	else
+	{
 	}
 	return heads;
 }

@@ -43,6 +43,10 @@ class COGIT_EXPORT CoGit : public QObject
 		 */
 		~CoGit();
 
+		/*! 判断CoGit对象是否有意义
+		 */
+		const bool isValid() const {return !m_gitWdDir.isEmpty() && !m_gitBin.isEmpty();}
+
 		/*! 获取git的顶级工作目录路径
 		*/
 		const QString gitWdDir() const {return m_gitWdDir;}

@@ -42,6 +42,10 @@ class COGIT_EXPORT CoCommit : public CoObject
 		
 	public:
 	
+		/*! 函数列表为空构造函数
+		 */
+		explicit CoCommit();
+
 		/*! 构造函数
 		 * \param repo 所属Repo的指针
 		 * \param id commit对象的（完整的）SHA串
@@ -55,7 +59,7 @@ class COGIT_EXPORT CoCommit : public CoObject
 		 */
 		explicit CoCommit
 			(
-			 CoRepo* repo, QString id, QString tree,CoActor author,
+			 CoRepo* repo, QString id, QString tree, CoActor author,
 			 QDateTime authored_date, CoActor committer,QDateTime committed_date,
 			 QString message,QStringList parents
 			 );
@@ -70,6 +74,10 @@ class COGIT_EXPORT CoCommit : public CoObject
 		/* 析构函数
 		 */
 		~CoCommit();
+
+		/*!
+		 */
+		const bool isValid() const;
 
 		/*! 获取父commit对象的列表
 		 * \attention 第一次调用后会缓存父commit对象列表

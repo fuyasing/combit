@@ -30,11 +30,11 @@ class QByteArray;
 //! 本类的功能：Git Repo的封装类
 /*! 本类是Git Repo的封装类，实现Git Repo的相关操作
  */
-class COGIT_EXPORT CoRepo
+class COGIT_EXPORT CoRepo : public QObject
 {
 	
 	public:
-		
+
 		/*! 构造函数，根据Repo路径创建CoRepo对象
 		 * Repo可以是bare Repo或含工作区的Repo(正常的Git Repo)
 		 * 例如:
@@ -43,11 +43,15 @@ class COGIT_EXPORT CoRepo
 		 * \param path Git Repo的路径，如详述部分的示例
 		 * \attention path请使用绝对路径
 		 */
-		explicit CoRepo(QString path="");
+		explicit CoRepo(QString path = "");
 
 		/*! 析构函数
 		 */
 		~CoRepo();
+
+		/*!
+		 */
+		const bool isValid() const;
 
 		/*! 判断该对象所指目录是否为一个Git仓库目录
 		 */

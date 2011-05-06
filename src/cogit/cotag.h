@@ -35,6 +35,10 @@ class COGIT_EXPORT CoTag : public CoRef
 {
 	public:
 
+		/*!
+		 */
+		explicit CoTag();
+
 		/*! 构造函数
 		 * \param repo 所属Repo的指针
 		 * \param name tag的名字，例如v1.0
@@ -58,6 +62,10 @@ class COGIT_EXPORT CoTag : public CoRef
 		/*! 析构函数
 		*/
 		~CoTag();
+		
+		/*!
+		 */
+		const bool isValid() const;
 
 		/*! 获取repo中所有的head的列表
 		 * \param repo 指定的Repo
@@ -65,9 +73,6 @@ class COGIT_EXPORT CoTag : public CoRef
 		 */
 		static QList<CoTag*> findAllTags(CoRepo* repo, CoKwargs opts=CoKwargs());
 
-	private:
-		QString m_name;
-		CoCommit* m_commit;
 };
 
 #endif

@@ -38,6 +38,10 @@ class COGIT_EXPORT CoDiff
 	
 	public:
 
+		/*!l列表为空的构造函数
+		 */
+		explicit CoDiff();
+
 		/*! 构造函数
 		 * \param repo 所属Repo的指针
 		 * \param a_path 在a中的路径
@@ -53,7 +57,7 @@ class COGIT_EXPORT CoDiff
 		 * \param diff 差异内容
 		 */
 		explicit CoDiff(
-				CoRepo* repo,QString a_path, QString b_path, 
+				CoRepo* repo, QString a_path, QString b_path, 
 				CoCommit* a_commit, CoCommit* b_commit,
 				qint32 a_mode, qint32 b_mode, bool new_file, bool deleted_file, 
 				QString rename_from, QString rename_to, QString diff
@@ -83,6 +87,10 @@ class COGIT_EXPORT CoDiff
 		/*! 析构函数
 		 */
 		~CoDiff();
+
+		/*!
+		 */
+		const bool isValid() const;
 
 		/*! 获取所属Repo的指针
 		 */

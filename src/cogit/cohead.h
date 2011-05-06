@@ -36,6 +36,10 @@ class COGIT_EXPORT CoHead : public CoRef
 	
 	public:
 
+		/*!
+		 */
+		explicit CoHead();
+
 		/*! 构造函数
 		 * \param repo 所属Repo的指针
 		 * \param name head的名字，例如master
@@ -59,6 +63,10 @@ class COGIT_EXPORT CoHead : public CoRef
 		/*! 析构函数
 		 */
 		~CoHead();
+
+		/*!
+		 */
+		const bool isValid() const;
 	
 		/*! 更新Git引用指向的commit
 		 */
@@ -69,10 +77,6 @@ class COGIT_EXPORT CoHead : public CoRef
 		 * \param opts git for-each-ref命令可接受的附加参数
 		 */
 		static QList<CoHead*> findAllHeads(CoRepo* repo, CoKwargs opts = CoKwargs());
-
-	private:
-		QString m_name;
-		CoCommit* m_commit;
 
 };
 

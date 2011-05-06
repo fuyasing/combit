@@ -21,6 +21,22 @@
 #include <QList>
 #include <QRegExp>
 
+CoDiff::CoDiff()
+{
+	m_repo = NULL;
+	m_aPath = "";
+	m_bPath = "";
+	m_aCommit = NULL;
+	m_bCommit = NULL;
+	m_aMode = 0;
+	m_bMode = 0;
+	m_isNewFile = false;
+	m_isDeletedFile = false;
+	m_renameFrom = "";
+	m_renameTo = "";
+	m_diff = "";
+}
+
 CoDiff::CoDiff(CoRepo* repo,QString a_path,QString b_path, CoCommit* a_commit, CoCommit* b_commit, qint32 a_mode, qint32 b_mode, bool new_file, bool deleted_file, QString rename_from, QString rename_to,QString diff)
 {
 	m_repo = repo;
@@ -56,6 +72,14 @@ CoDiff::CoDiff(CoRepo* repo,QString a_path, QString b_path, QString a_commit, QS
 
 CoDiff::~CoDiff()
 {
+
+}
+
+const bool CoDiff::isValid() const
+{
+	if(m_repo == NULL || m_aCommit == NULL || m_bCommit == NULL)
+		return false;
+	return true;
 
 }
 
@@ -126,6 +150,8 @@ const QString CoDiff::diffContent() const
 
 QList<CoDiff*> CoDiff::diffsFromString(CoRepo* repo, QString text)
 {
+	if(repo == NULL || text.isEmpty())
+		return QList<CoDiff*>();
 	QList<CoDiff*> diffs;
 	QRegExp diffHeader(
 			"#^diff[ ]--git[ ]a/(\\S+)[ ]b/(\\S+)\\n(?:^similarity[ ]index[ ](\\d+)%\\n^rename[ ]from[ ](\\S+)\\n^rename[ ]to[ ](\\S+)(?:\\n|$))?(?:^old[ ]mode[ ](\\d+)\\n^new[ ]mode[ ](\\d+)(?:\\n|$))?(?:^new[ ]file[ ]mode[ ](.+)(?:\\n|$))?(?:^deleted[ ]file[ ]mode[ ](.+)(?:\\n|$))?(?:^index[ ]([0-9A-Fa-f]+)\\.\\.([0-9A-Fa-f]+)[ ]?(.+)?(?:\\n|$))?"

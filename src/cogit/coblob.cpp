@@ -21,6 +21,14 @@
 #include <QFileInfo>
 #include <QRegExp>
 
+CoBlob::CoBlob():CoObject(NULL,"",CoObject::Blob)
+{
+	m_mode = 0;
+	m_name = "";
+	m_size = -1;
+	m_data = "";
+}
+
 CoBlob::CoBlob(CoRepo *repo, QString id, qint32 mode, QString name):CoObject(repo,id,CoObject::Blob)
 {
 	m_mode = mode;
@@ -33,6 +41,13 @@ CoBlob::~CoBlob()
 {
 }
 
+const bool CoBlob::isValid() const
+{
+	if(!CoObject::isValid() || m_mode ==0 || m_name.isEmpty())
+		return false;
+	return true;
+}
+
 const qint32 CoBlob::mode() const
 {
 	return m_mode;
@@ -43,8 +58,10 @@ const QString CoBlob::name() const
 	return m_name;
 }
 
-const int CoBlob::size()
+const qint32 CoBlob::size()
 {
+	if(!isValid())
+		return 0;
 	if(m_size < 0)
 	{
 		QStringList cmd;
@@ -54,13 +71,18 @@ const int CoBlob::size()
 		QString out,error;
 		bool success = repo()->repoGit()->execute(cmd, opts, &out, &error);
 		if(success)
-			m_size =  out.trimmed().toInt();
+			m_size =  out.trimmed().toLong();
+		else
+		{
+		}
 	}
 	return m_size;
 }
 
 const QString CoBlob::data()
 {
+	if(!isValid())
+		return "";
 	if(m_data.isEmpty())
 	{
 		QStringList cmd;
@@ -71,12 +93,17 @@ const QString CoBlob::data()
 		bool success = repo()->repoGit()->execute(cmd, opts, &out, &error);
 		if(success)
 			m_data =  out;
+		else
+		{
+		}
 	}
 	return m_data;
 }
 
 const QString CoBlob::baseName() const
 {
+	if(!isValid())
+		return "";
 	QString base;
 	QFileInfo fi(m_name);
 	base = fi.completeBaseName();
@@ -90,6 +117,8 @@ const QString CoBlob::mimeType() const
 
 const QString CoBlob::getDataFromId(CoRepo* repo, QString id)
 {
+	if(repo == NULL || id.isEmpty())
+		return "";
 	QStringList cmd;
 	cmd << "cat-file" << id;
 	CoKwargs opts;
@@ -98,18 +127,26 @@ const QString CoBlob::getDataFromId(CoRepo* repo, QString id)
 	bool success = repo->repoGit()->execute(cmd, opts, &out, &error);
 	if(success)
 		return out;
+	else
+	{
+		return "";
+	}
 }
 
 const CoBlames CoBlob::blame(CoRepo* repo,const CoCommit* commit,const QString file)
 {
+	if(repo == NULL || commit == NULL || file.isEmpty())
+		return CoBlames();
 	QStringList cmd;
-	cmd << "cat-file" << commit->id() << "--" << file;
+	cmd << "blame" << commit->id() << "--" << file;
 	CoKwargs opts;
 	opts.insert("p", "");
 	QString out, error;
 	bool success = repo->repoGit()->execute(cmd, opts, &out, &error);
 	if(!success)
+	{
 		return CoBlames();
+	}
 	CoBlames blame;
 	CoCommit* last_commit;
 	QString str;

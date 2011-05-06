@@ -18,16 +18,16 @@
 #include "corepo.h"
 #include "cocommit.h"
 
+CoTag::CoTag():CoRef(NULL, "", NULL, CoRef::Tag)
+{
+}
+
 CoTag::CoTag(CoRepo* repo, QString name, CoCommit* commit):CoRef(repo, name, commit, CoRef::Tag)
 {
-	m_name = name;
-	m_commit = commit;
 }
 
 CoTag::CoTag(CoRepo* repo, QString name, QString commit):CoRef(repo, name, commit, CoRef::Tag)
 {
-	m_name = name;
-	m_commit = new CoCommit(repo, commit);
 }
 
 CoTag::CoTag(CoRepo* repo, QString name):CoRef(repo, name, CoRef::Tag)
@@ -36,6 +36,11 @@ CoTag::CoTag(CoRepo* repo, QString name):CoRef(repo, name, CoRef::Tag)
 
 CoTag::~CoTag()
 {
+}
+
+const bool CoTag::isValid() const
+{
+	return CoRef::isValid();
 }
 
 QList<CoTag*> CoTag::findAllTags(CoRepo* repo, CoKwargs opts)
@@ -47,8 +52,8 @@ QList<CoTag*> CoTag::findAllTags(CoRepo* repo, CoKwargs opts)
 	cmd << "for-each-ref" << "refs/tags";
 	opts.insert("sort","*authoreddate");
 	opts.insert("format","%(refname) %(objectname)");
-	QString out;
-	bool success = repo->repoGit()->execute(cmd, opts, &out);
+	QString out, error;
+	bool success = repo->repoGit()->execute(cmd, opts, &out, &error);
 	if(success)
 	{
 		QString line, commit, name;
@@ -60,6 +65,9 @@ QList<CoTag*> CoTag::findAllTags(CoRepo* repo, CoKwargs opts)
 				name = lineSplit.first().split('/').last();
 				tags.append(new CoTag(repo, name, commit));
 		}
+	}
+	else
+	{
 	}
 	return tags;
 }

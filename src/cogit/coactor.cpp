@@ -18,6 +18,12 @@
 
 #include <QRegExp>
 
+CoActor::CoActor()
+{
+	m_name = "";
+	m_email = "";
+}
+
 CoActor::CoActor(QString name , QString email)
 {
 	m_name = name;
@@ -60,5 +66,10 @@ const QString CoActor::email() const
 const QString CoActor::sign() const
 {
 	return QString("%1 <%2>").arg(m_name).arg(m_email);
+}
+
+const bool CoActor::isValid() const
+{
+	return !m_name.isEmpty();
 }
 

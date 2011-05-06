@@ -88,6 +88,14 @@ bool CoStatDict::isEmpty()
 {
 	return m_statdict.isEmpty();
 }
+
+CoStats::CoStats()
+{
+	m_repo = NULL;
+	m_total = CoStatDict();
+	m_files = QHash<QString, CoStatDict>();
+}
+
 CoStats::CoStats(CoRepo* repo, CoStatDict total, QHash<QString, CoStatDict> files)
 {
 	m_repo = repo;

@@ -29,7 +29,7 @@ class CoCommit;
  * \sa
  * CoHead,CoTag
  */
-class COGIT_EXPORT CoRef
+class COGIT_EXPORT CoRef : public QObject
 {
 
 	public:
@@ -38,8 +38,13 @@ class COGIT_EXPORT CoRef
 		enum CoRefType
 		{
 			Head,	/*!<Head类型*/
-			Tag	/*!<Tag类型*/
+			Tag,	/*!<Tag类型*/
+			Invalid /*!<无效类型*/
 		};
+
+		/*!
+		 */
+		explicit CoRef();
 
 		/*! 构造函数
 		 * \param repo 所属Repo的指针
@@ -67,6 +72,9 @@ class COGIT_EXPORT CoRef
 		/*!析构函数
 		 */
 		~CoRef();
+		/*!
+		 */
+		const bool isValid() const;
 
 		/*!获取指向该Git引用所属Repo的指针
 		 */

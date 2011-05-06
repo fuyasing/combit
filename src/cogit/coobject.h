@@ -28,7 +28,7 @@ class CoRepo;
  *	\sa 
  *	CoBlob,CoTree
  */
-class COGIT_EXPORT CoObject
+class COGIT_EXPORT CoObject : public QObject
 {
 
 	public:
@@ -39,8 +39,14 @@ class COGIT_EXPORT CoObject
 		{
 			Blob,	/*!< Blob类型 */
 			Tree,	/*!< Tree类型 */
-			Commit	/*!< Commit类型 */
+			Commit,	/*!< Commit类型 */
+			Invalid /*!< 默认无效类型*/
 		};
+
+		/*!
+		 */
+		explicit CoObject();
+
 		/*! 构造函数
 		 * \param repo 所属Repo的指针
 		 * \param id Git对象的（完整的）SHA串
@@ -51,6 +57,10 @@ class COGIT_EXPORT CoObject
 		/*! 析构函数
 		 */
 		~CoObject();
+
+		/*!
+		 */
+		const bool isValid() const;
 
 		/*! 获取指向该Git对象所属Repo的指针
 		 */

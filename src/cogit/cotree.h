@@ -33,6 +33,10 @@ class COGIT_EXPORT CoTree : public CoObject
 
 	public:
 
+		/*!
+		 */
+		explicit CoTree();
+
 		/*! 构造函数
 		 * \param repo 所属Repo的指针
 		 * \param id Tree对象的（完整的）SHA串
@@ -44,6 +48,10 @@ class COGIT_EXPORT CoTree : public CoObject
 		/*! 析构函数
 		*/
 		~CoTree();
+
+		/*!
+		 */
+		const bool isValid() const;
 
 		/*! 获取该Git对象的mode
 		 */

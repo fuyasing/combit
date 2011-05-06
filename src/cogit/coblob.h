@@ -36,6 +36,10 @@ class COGIT_EXPORT CoBlob : public CoObject
 
 	public:
 
+		/*!参数列表为空的构造函数
+		 */
+		explicit CoBlob();
+
 		/*! 构造函数
 		 * \param repo 所属Repo的指针
 		 * \param id Blob对象的（完整的）SHA串
@@ -48,6 +52,10 @@ class COGIT_EXPORT CoBlob : public CoObject
 		*/
 		~CoBlob();
 
+		/*!
+		 */
+		const bool isValid() const;
+
 		/*! 获取该Git对象的mode
 		 */
 		const qint32 mode() const;
@@ -59,7 +67,7 @@ class COGIT_EXPORT CoBlob : public CoObject
 		/*! 获取Blob对象的大小（单位byte）
 		 * \note 第一次调用后，该值将被缓存
 		 */
-		const int size();
+		const qint32 size();
 
 		/*! 获取Blob对象的内容，如文本内容
 		 *  内容存储在QString型的字符串中
@@ -94,7 +102,7 @@ class COGIT_EXPORT CoBlob : public CoObject
 
 		qint32 m_mode;
 		QString m_name;
-		int m_size;
+		qint32 m_size;
 		QString m_data;
 		QString m_mimeType;
 		QString m_baseName;

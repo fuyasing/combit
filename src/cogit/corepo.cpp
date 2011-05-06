@@ -72,6 +72,11 @@ CoRepo::~CoRepo()
 		delete m_git;
 }
 
+const bool CoRepo::isValid() const
+{
+	return m_isRepo;
+}
+
 const bool CoRepo::isRepo() const
 {
 	return 	m_isRepo;
@@ -99,7 +104,7 @@ CoGit* CoRepo::repoGit() const
 
 QString CoRepo::getDescription() const
 {
-	if(!m_isRepo)
+	if(!isValid())
 		return "";
 
 	QString filename = m_gitPath + "/description";
@@ -117,7 +122,7 @@ QString CoRepo::getDescription() const
 
 void CoRepo::setDescription(QString descr)
 {
-	if(!m_isRepo)
+	if(!isValid())
 		return;
 
 	QString filename = m_gitPath + "/description";
@@ -132,7 +137,7 @@ void CoRepo::setDescription(QString descr)
 
 bool CoRepo::isDaemonExport()
 {
-	if(!m_isRepo)
+	if(!isValid())
 		return false;
 
 	QString filename = m_gitPath + "/git-daemon-export-ok";
@@ -141,7 +146,7 @@ bool CoRepo::isDaemonExport()
 
 void CoRepo::setDaemonExport(bool is_daemon_export)
 {
-	if(!m_isRepo)
+	if(!isValid())
 		return;
 
 	QString filename = m_gitPath + "/git-daemon-export-ok";
@@ -153,7 +158,7 @@ void CoRepo::setDaemonExport(bool is_daemon_export)
 
 QStringList CoRepo::getAlternates()
 {
-	if(!m_isRepo)
+	if(!isValid())
 		return QStringList();
 
 	QString alterPath = m_gitPath + "/objects" + "/info" + "/alternates";
@@ -179,7 +184,7 @@ QStringList CoRepo::getAlternates()
 
 void CoRepo::setAlternates(QStringList paths)
 {
-	if(!m_isRepo)
+	if(!isValid())
 		return;
 
 	QString alterPath = m_gitPath + "/objects" + "/info" + "/alternates";
@@ -206,7 +211,7 @@ void CoRepo::setAlternates(QStringList paths)
 
 bool CoRepo::isDirty()
 {
-	if(!m_isRepo)
+	if(!isValid())
 		return false;
 
 	if(m_isBare)
@@ -215,46 +220,58 @@ bool CoRepo::isDirty()
 	}
 	QStringList cmd;
 	cmd << "diff" << "HEAD" << "--";
-	QString out;
-	bool success = repoGit()->execute(cmd, CoKwargs(), &out);
+	QString out, error;
+	bool success = repoGit()->execute(cmd, CoKwargs(), &out, &error);
 	if(success)
 	{
 		return out.trimmed().size()>0;
 	}
-	return false;
+	else
+	{
+		return false;
+	}
 }
 
 QString CoRepo::activeBranch()
 {
-	if(!m_isRepo)
+	if(!isValid())
 		return "";
 
 	QStringList cmd;
 	cmd << "symbolic-ref" << "HEAD";
-	QString out,branch;
+	QString out, branch, error;
 	branch = "";
-	bool success = repoGit()->execute(cmd, CoKwargs(), &out);
+	bool success = repoGit()->execute(cmd, CoKwargs(), &out, &error);
 	if(success)
 	{
 		out = out.trimmed();
 		if(out.startsWith("refs/heads/"))
 			branch = out.section("refs/heads/", 1);
 	}
+	else
+	{
+	}
 	return branch;
 }
 
 QList<CoHead*> CoRepo::branches()
 {
+	if(!isValid())
+		return QList<CoHead*>();
 	return CoHead::findAllHeads(this);
 }
 
 QList<CoTag*> CoRepo::tags()
 {
+	if(!isValid())
+		return QList<CoTag*>();
 	return CoTag::findAllTags(this);
 }
 
 QList<CoCommit*> CoRepo::commitsInBranch(QString start, QString path, int maxCount, int skip)
 {
+	if(!isValid() || start.isEmpty())
+		return QList<CoCommit*>();
 	CoKwargs opts;
 	opts.insert("max-count", QString::number(maxCount));
 	opts.insert("skip", QString::number(skip));
@@ -263,12 +280,16 @@ QList<CoCommit*> CoRepo::commitsInBranch(QString start, QString path, int maxCou
 
 QList<CoCommit*> CoRepo::commitsBetween(QString from, QString to)
 {
+	if(!isValid() || (from.isEmpty() && to.isEmpty()))
+		return QList<CoCommit*>();
 	QString ref = QString("%1..%2").arg(from).arg(to);
 	return CoCommit::findAllCommits(this,ref);
 }
 
 QList<CoCommit*> CoRepo::commitsSince(QString start, QString path, QDate since)
 {
+	if(!isValid() || start.isEmpty())
+		return QList<CoCommit*>();
 	CoKwargs opts;
 	QString date = QString("%1-%2-%3").arg(QString::number(since.year())).arg(QString::number(since.month())).arg(QString::number(since.day()));
 	opts.insert("since",date);
@@ -277,32 +298,43 @@ QList<CoCommit*> CoRepo::commitsSince(QString start, QString path, QDate since)
 
 int CoRepo::commitCountInBranch(QString start, QString path)
 {
+	if(!isValid() || start.isEmpty())
+		return 0;
 	return CoCommit::commitsCount(this, start, path);
 }
 
 CoRepo* CoRepo::forkBare(QString path, CoKwargs opts)
 {
+	if(!isValid() || path.isEmpty())
+		return NULL;
 	QStringList cmd;
 	cmd << "clone" << m_gitPath << path;
 	opts.insert("bare","");
-	QString out;
-	bool success = repoGit()->execute(cmd, opts, &out);
+	QString out, error;
+	bool success = repoGit()->execute(cmd, opts, &out, &error);
 	if(success)
 		return new CoRepo(path);
-	return NULL;
+	else
+	{
+		return NULL;
+	}
 }
 
 QByteArray* CoRepo::archiveTar(QString treeish, QString prefix)
 {
+	if(!isValid() || treeish.isEmpty())
+		return NULL;
 	QStringList cmd;
 	cmd << "archive" << treeish;
 	CoKwargs opts;
 	if(!prefix.isEmpty())
 		opts.insert("prefix",prefix);
 	QByteArray* out = new QByteArray;
-	bool success = repoGit()->execute(cmd, opts, out);
-	if(success)
-		return out;
+	QByteArray* error = new QByteArray;
+	bool success = repoGit()->execute(cmd, opts, out, error);
+	if(!success)
+	{
+	}
 	return out;
 }
 
@@ -313,6 +345,8 @@ QByteArray* CoRepo::archiveTarGz(QString treeish, QString prefix)
 
 CoRepo* CoRepo::initBare(QString path, bool mkdir, CoKwargs opts)
 {
+	if(path.isEmpty())
+		return NULL;
 	QDir gitDir(path);
 	if(mkdir && !gitDir.exists())
 		gitDir.mkpath(path);
@@ -320,8 +354,12 @@ CoRepo* CoRepo::initBare(QString path, bool mkdir, CoKwargs opts)
 	QStringList cmd;
 	cmd << "init";
 	opts.insert("bare","");
-	QString out;
-	bool sucess = gitBin.execute(cmd,opts,&out);
+	QString out, error;
+	bool sucess = gitBin.execute(cmd,opts,&out, &error);
 	if(sucess)
 		return new CoRepo(path);
+	else
+	{
+		return NULL;
+	}
 }

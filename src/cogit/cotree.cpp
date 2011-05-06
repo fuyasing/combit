@@ -21,6 +21,14 @@
 #include <QStringList>
 #include <QRegExp>
 
+CoTree::CoTree():CoObject(NULL, "", CoObject::Tree)
+{
+	m_name = "";
+	m_mode = 0;
+	m_isInited = false;
+	m_contents = QHash<QString, CoObject*>();
+}
+
 CoTree::CoTree(CoRepo *repo, QString id, qint32 mode, QString name):CoObject(repo,id,CoObject::Tree)
 {
 	m_name = name;
@@ -31,6 +39,11 @@ CoTree::CoTree(CoRepo *repo, QString id, qint32 mode, QString name):CoObject(rep
 
 CoTree::~CoTree()
 {
+}
+
+const bool CoTree::isValid() const
+{
+	return CoObject::isValid() && m_mode != 0 && !m_name.isEmpty();
 }
 
 const qint32 CoTree::mode() const
@@ -80,11 +93,13 @@ QStringList CoTree::itemNames()
 
 QHash<QString, CoObject*> CoTree::getContentsFromId(CoRepo* repo, QString id)
 {
+	if(repo == NULL || id.isEmpty())
+		return QHash<QString,CoObject*>();
 	QHash<QString, CoObject*> contents;
 	QStringList cmd;
 	cmd << "ls-tree" << id;
-	QString out;
-	bool success = repo->repoGit()->execute(cmd, CoKwargs(), &out);
+	QString out,error;
+	bool success = repo->repoGit()->execute(cmd, CoKwargs(), &out, &error);
 	if(success)
 	{
 		QString str;
@@ -105,15 +120,20 @@ QHash<QString, CoObject*> CoTree::getContentsFromId(CoRepo* repo, QString id)
 			}
 		}
 	}
+	else
+	{
+	}
 	return contents;
 }
 
 void CoTree::initContents()
 {
+	if(!isValid())
+		return;
 	QStringList cmd;
 	cmd << "ls-tree" << id();
-	QString out;
-	bool success = repo()->repoGit()->execute(cmd, CoKwargs(), &out);
+	QString out, error;
+	bool success = repo()->repoGit()->execute(cmd, CoKwargs(), &out, &error);
 	if(success)
 	{
 		QString str;
@@ -134,5 +154,8 @@ void CoTree::initContents()
 			}
 			m_isInited = true;
 		}
+	}
+	else
+	{
 	}
 }

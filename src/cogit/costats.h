@@ -97,7 +97,11 @@ class COGIT_EXPORT CoStatDict
 class COGIT_EXPORT CoStats
 {
 	
-	public: 
+	public:	
+
+		/*!
+		 */
+		explicit CoStats();
 
 		/*! 构造函数
 		 * \param repo 所属Repo的指针

@@ -29,11 +29,15 @@ class COGIT_EXPORT CoActor
 	
 	public:
 
+		/*! 参数列表为空的构造函数
+		 */
+		explicit CoActor();
+
 		/*! 构造函数
 		 * \param name 姓名
 		 * \param email 电子邮件地址
 		 */
-		explicit CoActor(QString name = "" , QString email = "");
+		explicit CoActor(QString name, QString email);
 
 		/*! 构造函数，根据格式化的签名抽取name和email的信息并加以储存
 		 * sign的格式为: Michael Ding <yandy@combinz.com>
@@ -56,6 +60,11 @@ class COGIT_EXPORT CoActor
 		/*! 获取格式化的签名
 		 */
 		const QString sign() const;
+
+		/*! 判断所建对象是否有效
+		 *  \return 对象有效返回True
+		 */
+		const bool isValid() const;
 			
 	private:
 	

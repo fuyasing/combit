@@ -19,9 +19,10 @@
 
 #include <QByteArray>
 
-CoGit::CoGit(QString gitWdDir)
+CoGit::CoGit(QString gitWdDir, QString gitBinary)
 {
 	m_gitWdDir = gitWdDir;
+	m_gitBin = gitBinary;
 	m_hasProcess = false;
 }
 CoGit::~CoGit()
@@ -29,7 +30,7 @@ CoGit::~CoGit()
 }
 bool CoGit::execute(QStringList cmd, CoKwargs opts, QString* stdOut, QString* stdError, QString inStream, bool withExceptionsEmit)
 {
-	if(m_gitWdDir.isEmpty())
+	if(!isValid())
 		return false;
 	QByteArray rawStdOut, rawStdError;
 	bool ret = execute(cmd,opts,stdOut?&rawStdOut:NULL,stdError?&rawStdError:NULL,inStream,withExceptionsEmit);
@@ -42,9 +43,9 @@ bool CoGit::execute(QStringList cmd, CoKwargs opts, QString* stdOut, QString* st
 
 bool CoGit::execute(QStringList cmd, CoKwargs opts, QByteArray* stdOut, QByteArray* stdError, QString inStream, bool withExceptionsEmit)
 {
-	if(m_gitWdDir.isEmpty())
+	if(!isValid())
 		return false;
-	if(! (stdOut && stdError))
+	if(!(stdOut && stdError))
 		return false;
 	//一次只允许执行一个子进程
 	if(m_hasProcess)
@@ -74,6 +75,8 @@ void CoGit::cancel()
 
 QStringList CoGit::transformKwargs(CoKwargs opts)
 {
+	if(opts.isEmpty() || !isValid())
+		return QStringList();
 	QStringList args;
 	CoKwargs::const_iterator i = opts.constBegin();
 	while(i != opts.constEnd())

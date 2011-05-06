@@ -20,6 +20,14 @@
 
 #include <QStringList>
 
+CoRef::CoRef()
+{
+	m_repo = NULL;
+	m_name = "";
+	m_commit = NULL;
+	m_type = CoRef::Invalid;
+}
+
 CoRef::CoRef(CoRepo* repo, QString name, CoCommit* commit, CoRefType type)
 {
 	m_repo = repo;
@@ -45,7 +53,7 @@ CoRef::CoRef(CoRepo* repo,QString name, CoRefType type)
 	CoKwargs opts;
 	opts.insert("hash","");
 	QStringList cmd;
-	QString out;
+	QString out, error;
 	switch(type)
 	{
 		case Head:
@@ -61,7 +69,7 @@ CoRef::CoRef(CoRepo* repo,QString name, CoRefType type)
 		default:
 			break;
 	}
-	bool success = repo->repoGit()->execute(cmd, opts, &out);
+	bool success = repo->repoGit()->execute(cmd, opts, &out, &error);
 	if(success)
 	{
 		m_commit = new CoCommit(repo,out.trimmed());
@@ -70,6 +78,11 @@ CoRef::CoRef(CoRepo* repo,QString name, CoRefType type)
 
 CoRef::~CoRef()
 {
+}
+
+const bool CoRef::isValid() const
+{
+	return m_repo != NULL && !m_name.isEmpty() && m_commit != NULL && m_type != CoRef::Invalid;
 }
 
 CoRepo* CoRef::repo() const
@@ -89,6 +102,8 @@ const CoCommit* CoRef::commit() const
 
 bool CoRef::setCommit(CoCommit* commit)
 {
+	if(!isValid() || commit == NULL)
+		return false;
 	if(m_commit)
 		delete m_commit;
 	m_commit = commit;
@@ -96,6 +111,8 @@ bool CoRef::setCommit(CoCommit* commit)
 }
 bool CoRef::setCommit(QString commit)
 {
+	if(!isValid() || commit.isEmpty())
+		return false;
 	if(m_commit)
 		delete m_commit;
 	m_commit = new CoCommit(m_repo, commit);

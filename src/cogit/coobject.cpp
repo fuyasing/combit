@@ -22,6 +22,13 @@
 #include <QRegExp>
 #include <QStringList>
 
+CoObject::CoObject()
+{
+	m_repo = NULL;
+	m_id = "";
+	m_type = CoObject::Invalid;
+}
+
 CoObject::CoObject(CoRepo *repo, QString id, CoObject::CoObjType type)
 {
 	m_repo = repo;
@@ -30,6 +37,11 @@ CoObject::CoObject(CoRepo *repo, QString id, CoObject::CoObjType type)
 }
 CoObject::~CoObject()
 {
+}
+
+const bool CoObject::isValid() const
+{
+	return m_repo != NULL && !m_id.isEmpty() && m_type != CoObject::Invalid;
 }
 
 CoRepo* CoObject::repo() const
@@ -49,6 +61,8 @@ const CoObject::CoObjType CoObject::type() const
 
 CoObject* CoObject::objectFromString(CoRepo *repo, QString text)
 {
+	if(repo == NULL || text.isEmpty())
+		return NULL;
 	QStringList textSplit = text.split(QRegExp("\\s+"));
 	CoObject *obj;
 	if(textSplit.at(1)=="blob")
