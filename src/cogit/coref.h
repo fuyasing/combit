@@ -42,7 +42,7 @@ class COGIT_EXPORT CoRef : public QObject
 			Invalid /*!<无效类型*/
 		};
 
-		/*!
+		/*! 参数列表为空的构造函数
 		 */
 		explicit CoRef();
 
@@ -72,7 +72,9 @@ class COGIT_EXPORT CoRef : public QObject
 		/*!析构函数
 		 */
 		~CoRef();
-		/*!
+
+		/*! 判断所建对象是否有效
+		 *  \return 对象有效返回True
 		 */
 		bool isValid() const;
 
@@ -114,3 +116,4 @@ class COGIT_EXPORT CoRef : public QObject
 };
 
 #endif
+		/*!

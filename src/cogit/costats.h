@@ -21,7 +21,7 @@
 
 class CoRepo;
 
-//a! 本类的功能：存储Stat信息的基础单元
+//! 本类的功能：存储Stat信息的基础单元
 /*! 字典(或称Hash)数据结构，包含4个键值对：
  * deletions = 删除的行数
  * insertions = 插入的行数

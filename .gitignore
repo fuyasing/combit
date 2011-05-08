@@ -4,3 +4,4 @@
 .directory
 tags
 *.swp
+build/*

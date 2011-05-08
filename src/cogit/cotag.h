@@ -35,7 +35,7 @@ class COGIT_EXPORT CoTag : public CoRef
 {
 	public:
 
-		/*!
+		/*! 参数列表为空的构造函数
 		 */
 		explicit CoTag();
 
@@ -63,7 +63,8 @@ class COGIT_EXPORT CoTag : public CoRef
 		*/
 		~CoTag();
 		
-		/*!
+		/*! 判断所建对象是否有效
+		 *  \return 对象有效返回True
 		 */
 		bool isValid() const;
 

@@ -88,7 +88,8 @@ class COGIT_EXPORT CoDiff
 		 */
 		~CoDiff();
 
-		/*!
+		/*! 判断所建对象是否有效
+		 *  \return 对象有效返回True
 		 */
 		bool isValid() const;
 

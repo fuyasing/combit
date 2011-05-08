@@ -33,7 +33,7 @@ class COGIT_EXPORT CoTree : public CoObject
 
 	public:
 
-		/*!
+		/*! 参数列表为空的构造函数
 		 */
 		explicit CoTree();
 
@@ -49,7 +49,8 @@ class COGIT_EXPORT CoTree : public CoObject
 		*/
 		~CoTree();
 
-		/*!
+		/*! 判断所建对象是否有效
+		 *  \return 对象有效返回True
 		 */
 		bool isValid() const;
 
