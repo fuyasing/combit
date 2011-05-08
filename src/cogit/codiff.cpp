@@ -75,7 +75,7 @@ CoDiff::~CoDiff()
 
 }
 
-const bool CoDiff::isValid() const
+bool CoDiff::isValid() const
 {
 	if(m_repo == NULL || m_aCommit == NULL || m_bCommit == NULL)
 		return false;
@@ -83,67 +83,67 @@ const bool CoDiff::isValid() const
 
 }
 
-const CoRepo* CoDiff::repo() const
+CoRepo* CoDiff::repo() const
 {
 	return m_repo;
 }
 
-const QString CoDiff::aPath() const
+QString CoDiff::aPath() const
 {
 	return m_aPath;
 }
 
-const QString CoDiff::bPath() const
+QString CoDiff::bPath() const
 {
 	return m_bPath;
 }
 
-const CoCommit* CoDiff::aCommit() const
+CoCommit* CoDiff::aCommit() const
 {
 	return m_aCommit;
 }
 
-const CoCommit* CoDiff::bCommit() const
+CoCommit* CoDiff::bCommit() const
 {
 	return m_bCommit;
 }
 
-const qint32 CoDiff::aMode() const
+qint32 CoDiff::aMode() const
 {
 	return m_aMode;
 }
 
-const qint32 CoDiff::bMode() const
+qint32 CoDiff::bMode() const
 {
 	return m_bMode;
 }
 
-const bool CoDiff::isNewFile() const
+bool CoDiff::isNewFile() const
 {
 	return m_isNewFile;
 }
 
-const bool CoDiff::isDeletedFile() const
+bool CoDiff::isDeletedFile() const
 {
 	return m_isDeletedFile;
 }
 
-const bool CoDiff::isRenamed() const
+bool CoDiff::isRenamed() const
 {
 	return m_isRenamed;
 }
 
-const QString CoDiff::renameFrom() const
+QString CoDiff::renameFrom() const
 {
 	return m_renameFrom;
 }
 
-const QString CoDiff::renameTo() const
+QString CoDiff::renameTo() const
 {
 	return m_renameTo;
 }
 
-const QString CoDiff::diffContent() const
+QString CoDiff::diffContent() const
 {
 	return m_diff;
 }

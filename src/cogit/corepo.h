@@ -51,29 +51,29 @@ class COGIT_EXPORT CoRepo : public QObject
 
 		/*!
 		 */
-		const bool isValid() const;
+		bool isValid() const;
 
 		/*! 判断该对象所指目录是否为一个Git仓库目录
 		 */
-		const bool isRepo() const;
+		bool isRepo() const;
 
 		/*! 判断是否为bare Repo
 		 */
-		const bool isBare() const;
+		bool isBare() const;
 
 		/*! 获得git Repo的git路径。
 		 * 对于bare Repo，git Repo的git路径与工作目录路径想同
 		 * 对于一般的Repo，git Repo的git路径为工作目录最顶层中的.git目录的路径
 		 * \sa wdPath()
 		 */
-		const QString gitPath() const;
+		QString gitPath() const;
 
 		/*! 获得git Repo的工作目录路径
 		 * 对于bare Repo，输出等同gitPath()
 		 * 对于一般的Repo，git Repo的工作目录路径为git所管理项目的最顶层目录的路径
 		 * \sa gitPath()
 		 */
-		const QString wdPath() const;
+		QString wdPath() const;
 
 		/*! 获得与CoRepo绑定的CoGit对象的指针
 		 * CoGit对象是与git程序交互的门户

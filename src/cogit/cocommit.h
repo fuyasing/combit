@@ -59,7 +59,7 @@ class COGIT_EXPORT CoCommit : public CoObject
 		 */
 		explicit CoCommit
 			(
-			 CoRepo* repo, QString id, QString tree, CoActor author,
+			 CoRepo* repo, QString id, CoTree* tree, CoActor author,
 			 QDateTime authored_date, CoActor committer,QDateTime committed_date,
 			 QString message,QStringList parents
 			 );
@@ -77,7 +77,7 @@ class COGIT_EXPORT CoCommit : public CoObject
 
 		/*!
 		 */
-		const bool isValid() const;
+		bool isValid() const;
 
 		/*! 获取父commit对象的列表
 		 * \attention 第一次调用后会缓存父commit对象列表
@@ -86,35 +86,35 @@ class COGIT_EXPORT CoCommit : public CoObject
 
 		/*! 获取commit指向的tree
 		 */
-		const QString tree() const;
+		CoTree* tree() const;
 
 		/*! 获取commit的创建者
 		 */
-		const CoActor author() const;
+		CoActor author() const;
 
 		/*! 获取commit的创建日期
 		 */
-		const QDateTime authoredDate() const;
+		QDateTime authoredDate() const;
 
 		/*! 获取commit的提交者
 		 */
-		const CoActor committer() const;
+		CoActor committer() const;
 
 		/*! 获取commit的提交日期
 		 */
-		const QDateTime committedDate() const;
+		QDateTime committedDate() const;
 
 		/*! 获取commit id的7位简略值
 		 */
-		const QString idAbbrev() const;
+		QString idAbbrev() const;
 
 		/*! 获取commit提交信息的第一行
 		 */
-		const QString summary() const;
+		QString summary() const;
 
 		/*! 获取commit完整的提交信息
 		 */
-		const QString message() const;
+		QString message() const;
 
 		/*! 生成当前commit和其第一父commit之间的CoDiff对象(差异对象)列表，如果没有父commit，则生成包含所有内容的CoDiff对象列表
 		 */
@@ -122,7 +122,7 @@ class COGIT_EXPORT CoCommit : public CoObject
 
 		/*! 根据当前commit和其第一父commit之间的差异生成CoStats对象，如果没有父commit则根据包含所有内容生成CoStats对象
 		 */
-		const CoStats* stats();
+		CoStats* stats();
 		
 		/*! 计算从ref开始，向前可达到的所有包含path的commit的个数
 		 * \param repo 所属Repo的指针
@@ -200,7 +200,7 @@ class COGIT_EXPORT CoCommit : public CoObject
 	private:
 	
 		QStringList m_parentsIds;
-		QString m_tree;
+		CoTree* m_tree;
 		CoActor m_author;
 		QDateTime m_authoredDate;
 		CoActor m_committer;

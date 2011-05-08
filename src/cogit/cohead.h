@@ -66,11 +66,11 @@ class COGIT_EXPORT CoHead : public CoRef
 
 		/*!
 		 */
-		const bool isValid() const;
+		bool isValid() const;
 	
 		/*! 更新Git引用指向的commit
 		 */
-		const CoCommit* update();
+		CoCommit* update();
 	
 		/*! 获取repo中所有的head的列表
 		 * \param repo 指定的Repo

@@ -45,11 +45,11 @@ class COGIT_EXPORT CoGit : public QObject
 
 		/*! 判断CoGit对象是否有意义
 		 */
-		const bool isValid() const {return !m_gitWdDir.isEmpty() && !m_gitBin.isEmpty();}
+		bool isValid() const {return !m_gitWdDir.isEmpty() && !m_gitBin.isEmpty();}
 
 		/*! 获取git的顶级工作目录路径
 		*/
-		const QString gitWdDir() const {return m_gitWdDir;}
+		QString gitWdDir() const {return m_gitWdDir;}
 
 		/*! 在子进程中调用Git程序
 		 * \param cmd 不包括"git"在内的命令字符串列表

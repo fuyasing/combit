@@ -51,20 +51,20 @@ class COGIT_EXPORT CoActor
 		
 		/*! 获取名字
 		 */
-		const QString name() const;
+		QString name() const;
 
 		/*! 获取email地址
 		 */
-		const QString email() const;
+		QString email() const;
 
 		/*! 获取格式化的签名
 		 */
-		const QString sign() const;
+		QString sign() const;
 
 		/*! 判断所建对象是否有效
 		 *  \return 对象有效返回True
 		 */
-		const bool isValid() const;
+		bool isValid() const;
 			
 	private:
 	

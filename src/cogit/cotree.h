@@ -51,15 +51,15 @@ class COGIT_EXPORT CoTree : public CoObject
 
 		/*!
 		 */
-		const bool isValid() const;
+		bool isValid() const;
 
 		/*! 获取该Git对象的mode
 		 */
-		const qint32 mode() const;
+		qint32 mode() const;
 
 		/*! 获取该Git对象的name,即所指目录的目录名
 		 */
-		const QString name() const;
+		QString name() const;
 
 		/*! 获取Tree对象所包含Blob和Tree对象的个数
 		 */
@@ -75,7 +75,7 @@ class COGIT_EXPORT CoTree : public CoObject
 		 * \param name name的值
 		 * \return 指向特定Git对象实例的CoObject型的指针
 		 */
-		const CoObject* item(QString &name);
+		CoObject* item(QString &name);
 
 		/*! 获取该Tree对象包含的所有Git对象，以列表形式返回
 		 * \return 返回CoObject型指针的列表

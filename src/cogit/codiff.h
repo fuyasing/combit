@@ -90,62 +90,62 @@ class COGIT_EXPORT CoDiff
 
 		/*!
 		 */
-		const bool isValid() const;
+		bool isValid() const;
 
 		/*! 获取所属Repo的指针
 		 */
-		const CoRepo* repo() const;
+		CoRepo* repo() const;
 
 		/*! 获取在a中的路径（包含文件名）
 		 */
-		const QString aPath() const;
+		QString aPath() const;
 
 		/*! 获取在b中的路径（包含文件名）
 		 */
-		const QString bPath() const;
+		QString bPath() const;
 
 		/*! 获取a commit的指针
 		 */
-		const CoCommit* aCommit() const;
+		CoCommit* aCommit() const;
 
 		/*! 获取b commit的指针
 		 */
-		const CoCommit* bCommit() const;
+		CoCommit* bCommit() const;
 
 		/*! 获取在a中的mode
 		 */
-		const qint32 aMode() const;
+		qint32 aMode() const;
 
 		/*! 获取在b中的mode
 		 */
-		const qint32 bMode() const;
+		qint32 bMode() const;
 
 		/*! 是否是新文件
 		 * \return 是新文件返回True
 		 */
-		const bool isNewFile() const;
+		bool isNewFile() const;
 
 		/*! 是否是被删除文件
 		 * \return 是被删除文件返回True
 		 */
-		const bool isDeletedFile() const;
+		bool isDeletedFile() const;
 
 		/*! 是否重命名了
 		 * \return 重命名了返回True
 		 */
-		const bool isRenamed() const;
+		bool isRenamed() const;
 
 		/*! 获得重命名前的文件名
 		 */
-		const QString renameFrom() const;
+		QString renameFrom() const;
 
 		/*! 获得重命名后的文件名
 		 */
-		const QString renameTo() const;
+		QString renameTo() const;
 
 		/*! 获取差异内容
 		 */
-		const QString diffContent() const;
+		QString diffContent() const;
 
 		/*! 根据git diff命令的输出，生成CoDiff列表
 		 * \param repo 所属Repo的指针

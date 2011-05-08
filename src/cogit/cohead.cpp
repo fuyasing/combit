@@ -38,12 +38,12 @@ CoHead::~CoHead()
 
 }
 
-const bool CoHead::isValid() const
+bool CoHead::isValid() const
 {
 	return CoRef::isValid();
 }
 
-const CoCommit* CoHead::update()
+CoCommit* CoHead::update()
 {
 	if(!isValid())
 		return NULL;
@@ -67,14 +67,14 @@ QList<CoHead*> CoHead::findAllHeads(CoRepo* repo, CoKwargs opts)
 	QStringList cmd;
 	QList<CoHead*> heads;
 	cmd << "for-each-ref" << "refs/heads";
-	opts.insert("sort","*authoreddate");
+	opts.insert("sort","*authordate");
 	opts.insert("format","%(refname) %(objectname)");
 	QString out, error;
 	bool success = repo->repoGit()->execute(cmd, opts, &out, &error);
 	if(success)
 	{
 		QString line, commit, name;
-		foreach(line, out.split('\n'))
+		foreach(line, out.trimmed().split("\n"))
 		{
 				QStringList lineSplit;
 				lineSplit =  line.trimmed().split(" ");

@@ -65,7 +65,7 @@ class COGIT_EXPORT CoTag : public CoRef
 		
 		/*!
 		 */
-		const bool isValid() const;
+		bool isValid() const;
 
 		/*! 获取repo中所有的head的列表
 		 * \param repo 指定的Repo

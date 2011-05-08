@@ -60,7 +60,7 @@ class COGIT_EXPORT CoObject : public QObject
 
 		/*!
 		 */
-		const bool isValid() const;
+		bool isValid() const;
 
 		/*! 获取指向该Git对象所属Repo的指针
 		 */
@@ -68,11 +68,11 @@ class COGIT_EXPORT CoObject : public QObject
 
 		/*! 获取该Git对象的SHA串
 		 */
-		const QString id() const;
+		QString id() const;
 
 		/*! 获取该Git对象的类型
 		 */
-		const CoObjType type() const;
+		CoObjType type() const;
 
 		/*! 根据特定格式字符串构造Git对象(blob,tree,...)
 		 * 字符串特定格式同"git ls-tree"命令输出结果中的一项的格式：

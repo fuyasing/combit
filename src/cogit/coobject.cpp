@@ -39,7 +39,7 @@ CoObject::~CoObject()
 {
 }
 
-const bool CoObject::isValid() const
+bool CoObject::isValid() const
 {
 	return m_repo != NULL && !m_id.isEmpty() && m_type != CoObject::Invalid;
 }
@@ -49,12 +49,12 @@ CoRepo* CoObject::repo() const
 	return m_repo;
 }
 
-const QString CoObject::id() const
+QString CoObject::id() const
 {
 	return m_id;
 }
 
-const CoObject::CoObjType CoObject::type() const
+CoObject::CoObjType CoObject::type() const
 {
 	return m_type;
 }

@@ -2,9 +2,8 @@
 #define CODATA_H
 
 #include "codata_global.h"
-#include <QString>
 
-class QObject;
+#include <QObject>
 
 class CODATA_EXPORT CoData : public QObject
 {

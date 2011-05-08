@@ -135,7 +135,7 @@ class COGIT_EXPORT CoStats
 		/*! 是否内容为空(即没有差别)
 		 * \return 如果为空，返回True
 		 */
-		const bool isClean();
+		bool isClean();
 		
 	private:
 		

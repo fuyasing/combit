@@ -54,48 +54,48 @@ class COGIT_EXPORT CoBlob : public CoObject
 
 		/*!
 		 */
-		const bool isValid() const;
+		bool isValid() const;
 
 		/*! 获取该Git对象的mode
 		 */
-		const qint32 mode() const;
+		qint32 mode() const;
 
 		/*! 获取该Git对象的name,即所指文件的文件名
 		 */
-		const QString name() const;
+		QString name() const;
 
 		/*! 获取Blob对象的大小（单位byte）
 		 * \note 第一次调用后，该值将被缓存
 		 */
-		const qint32 size();
+		qint32 size();
 
 		/*! 获取Blob对象的内容，如文本内容
 		 *  内容存储在QString型的字符串中
 		 * \note 第一次调用后，该值将被缓存
 		 */
-		const QString data();
+		QString data();
 
 		/*! 获取Blob对象的mime type 信息
 		 * \note 第一次调用后，该值将被缓存
 		 * \attention 该函数在第一版中未实现，返回值一直是"text/plain"
 		 */
-		const QString mimeType() const;
+		QString mimeType() const;
 
 		/*! 获取Blob对象对应文件的文件名(不含扩展名)
 		 */
-		const QString baseName() const;
+		QString baseName() const;
 
 		/*! 获得id(SHA串)为id的blob对象的内容
 		 * \param repo 所属仓库
 		 * \param id blob的id值
 		 * \attention 此函数为静态函数
 		 */
-		static const QString getDataFromId(CoRepo* repo, QString id);
+		static QString getDataFromId(CoRepo* repo, QString id);
 
 		/*! 获取给定文件相对于特定commit的Blame信息
 		 * \return 存储在CoBlames类型中的blame信息
 		 */
-		static const CoBlames blame(CoRepo* repo,const CoCommit* commit,const QString file);
+		static CoBlames blame(CoRepo* repo,const CoCommit* commit,const QString file);
 
 
 	private:

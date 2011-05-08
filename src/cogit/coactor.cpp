@@ -37,7 +37,7 @@ CoActor::CoActor(QString sign)
 	   根据格式化的字符串创建CoActor对象
 	   字符串格式：Michael Ding <yandy@gmail.com>
 	   */
-	QRegExp rx("(.*)(?:\\s*)<(.+?)>");
+	QRegExp rx("(.*)(?:\\s*)<(.+)>");
 	int pos = rx.indexIn(sign);
 	if(pos >-1)
 	{
@@ -55,20 +55,20 @@ CoActor::~CoActor()
 {
 }
 
-const QString CoActor::name() const
+QString CoActor::name() const
 {
 	return m_name;
 }
-const QString CoActor::email() const
+QString CoActor::email() const
 {
 	return m_email;
 }
-const QString CoActor::sign() const
+QString CoActor::sign() const
 {
 	return QString("%1 <%2>").arg(m_name).arg(m_email);
 }
 
-const bool CoActor::isValid() const
+bool CoActor::isValid() const
 {
 	return !m_name.isEmpty();
 }

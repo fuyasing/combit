@@ -74,21 +74,21 @@ class COGIT_EXPORT CoRef : public QObject
 		~CoRef();
 		/*!
 		 */
-		const bool isValid() const;
+		bool isValid() const;
 
 		/*!获取指向该Git引用所属Repo的指针
 		 */
 		CoRepo* repo() const;
 		/*! 获取Git引用的名字
 		*/
-		const QString name() const;
+		QString name() const;
 
 		/*! 获取Git引用指向的commit
 		*/
-		const CoCommit* commit() const;
+		CoCommit* commit() const;
 
 		/*!获取该Git引用的类型*/
-		const CoRefType type() const;
+		CoRefType type() const;
 	
 	protected:
 		/*! 设置Git引用指向的commit

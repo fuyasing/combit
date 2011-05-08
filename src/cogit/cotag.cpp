@@ -38,7 +38,7 @@ CoTag::~CoTag()
 {
 }
 
-const bool CoTag::isValid() const
+bool CoTag::isValid() const
 {
 	return CoRef::isValid();
 }
@@ -50,14 +50,14 @@ QList<CoTag*> CoTag::findAllTags(CoRepo* repo, CoKwargs opts)
 	QStringList cmd;
 	QList<CoTag*> tags;
 	cmd << "for-each-ref" << "refs/tags";
-	opts.insert("sort","*authoreddate");
-	opts.insert("format","%(refname) %(objectname)");
+	opts.insert("sort","*authordate");
+	opts.insert("format","\"%(refname) %(objectname)\"");
 	QString out, error;
 	bool success = repo->repoGit()->execute(cmd, opts, &out, &error);
 	if(success)
 	{
 		QString line, commit, name;
-		foreach(line, out.split('\n'))
+		foreach(line, out.trimmed().split('\n'))
 		{
 				QStringList lineSplit;
 				lineSplit =  line.trimmed().split(" ");

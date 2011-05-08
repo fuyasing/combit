@@ -80,7 +80,7 @@ CoRef::~CoRef()
 {
 }
 
-const bool CoRef::isValid() const
+bool CoRef::isValid() const
 {
 	return m_repo != NULL && !m_name.isEmpty() && m_commit != NULL && m_type != CoRef::Invalid;
 }
@@ -90,12 +90,12 @@ CoRepo* CoRef::repo() const
 	return m_repo;
 }
 
-const QString CoRef::name() const
+QString CoRef::name() const
 {
 	return m_name;
 }
 
-const CoCommit* CoRef::commit() const
+CoCommit* CoRef::commit() const
 {
 	return m_commit;
 }

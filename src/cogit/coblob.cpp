@@ -41,24 +41,24 @@ CoBlob::~CoBlob()
 {
 }
 
-const bool CoBlob::isValid() const
+bool CoBlob::isValid() const
 {
 	if(!CoObject::isValid() || m_mode ==0 || m_name.isEmpty())
 		return false;
 	return true;
 }
 
-const qint32 CoBlob::mode() const
+qint32 CoBlob::mode() const
 {
 	return m_mode;
 }
 
-const QString CoBlob::name() const
+QString CoBlob::name() const
 {
 	return m_name;
 }
 
-const qint32 CoBlob::size()
+qint32 CoBlob::size()
 {
 	if(!isValid())
 		return 0;
@@ -79,7 +79,7 @@ const qint32 CoBlob::size()
 	return m_size;
 }
 
-const QString CoBlob::data()
+QString CoBlob::data()
 {
 	if(!isValid())
 		return "";
@@ -100,7 +100,7 @@ const QString CoBlob::data()
 	return m_data;
 }
 
-const QString CoBlob::baseName() const
+QString CoBlob::baseName() const
 {
 	if(!isValid())
 		return "";
@@ -110,12 +110,12 @@ const QString CoBlob::baseName() const
 	return base;
 }
 
-const QString CoBlob::mimeType() const
+QString CoBlob::mimeType() const
 {
 	//TODO
 }
 
-const QString CoBlob::getDataFromId(CoRepo* repo, QString id)
+QString CoBlob::getDataFromId(CoRepo* repo, QString id)
 {
 	if(repo == NULL || id.isEmpty())
 		return "";
@@ -133,7 +133,7 @@ const QString CoBlob::getDataFromId(CoRepo* repo, QString id)
 	}
 }
 
-const CoBlames CoBlob::blame(CoRepo* repo,const CoCommit* commit,const QString file)
+CoBlames CoBlob::blame(CoRepo* repo,const CoCommit* commit,const QString file)
 {
 	if(repo == NULL || commit == NULL || file.isEmpty())
 		return CoBlames();
@@ -150,7 +150,7 @@ const CoBlames CoBlob::blame(CoRepo* repo,const CoCommit* commit,const QString f
 	CoBlames blame;
 	CoCommit* last_commit;
 	QString str;
-	foreach(str,out.split(QRegExp("\\n")))
+	foreach(str,out.trimmed().split("\n"))
 	{
 		str = str.trimmed();
 		QRegExp commitIdRe("^[0-9A-Fa-f]{40}");

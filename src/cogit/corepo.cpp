@@ -72,27 +72,27 @@ CoRepo::~CoRepo()
 		delete m_git;
 }
 
-const bool CoRepo::isValid() const
+bool CoRepo::isValid() const
 {
 	return m_isRepo;
 }
 
-const bool CoRepo::isRepo() const
+bool CoRepo::isRepo() const
 {
 	return 	m_isRepo;
 }
 
-const bool CoRepo::isBare() const
+bool CoRepo::isBare() const
 {
 	return m_isBare;
 }
 
-const QString CoRepo::gitPath() const
+QString CoRepo::gitPath() const
 {
 	return m_gitPath;
 }
 
-const QString CoRepo::wdPath() const
+QString CoRepo::wdPath() const
 {
 	return m_wdPath;
 }

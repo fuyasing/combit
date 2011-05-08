@@ -41,17 +41,17 @@ CoTree::~CoTree()
 {
 }
 
-const bool CoTree::isValid() const
+bool CoTree::isValid() const
 {
 	return CoObject::isValid() && m_mode != 0 && !m_name.isEmpty();
 }
 
-const qint32 CoTree::mode() const
+qint32 CoTree::mode() const
 {
 	return m_mode;
 }
 
-const QString CoTree::name() const
+QString CoTree::name() const
 {
 	return m_name;
 }
@@ -70,7 +70,7 @@ bool CoTree::contains(QString &name)
 	return m_contents.contains(name);
 }
 
-const CoObject* CoTree::item(QString &name)
+CoObject* CoTree::item(QString &name)
 {
 	if(!m_isInited)
 		initContents();
@@ -103,7 +103,7 @@ QHash<QString, CoObject*> CoTree::getContentsFromId(CoRepo* repo, QString id)
 	if(success)
 	{
 		QString str;
-		foreach(str, out.split(QRegExp("\\n")));
+		foreach(str, out.trimmed().split("\n"))
 		{
 			str = str.trimmed();
 			CoObject * obj = CoObject::objectFromString(repo, str);
@@ -137,7 +137,7 @@ void CoTree::initContents()
 	if(success)
 	{
 		QString str;
-		foreach(str, out.split(QRegExp("\\n")));
+		foreach(str, out.trimmed().split("\n"))
 		{
 			str = str.trimmed();
 			CoObject * obj = CoObject::objectFromString(repo(), str);

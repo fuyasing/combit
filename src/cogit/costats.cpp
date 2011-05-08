@@ -108,7 +108,7 @@ CoStats::CoStats(CoRepo* repo, QString text)
 	m_repo = repo;
 	QString line;
 	QStringList lineSplit;
-	foreach(line, text.split('\n'))
+	foreach(line, text.trimmed().split('\n'))
 	{
 		CoStatDict fileDict;
 		lineSplit = line.trimmed().split('\t');
@@ -145,7 +145,7 @@ QHash<QString, CoStatDict> CoStats::files() const
 	return m_files;
 }
 
-const bool CoStats::isClean()
+bool CoStats::isClean()
 {
 	return m_total.isEmpty();
 }
