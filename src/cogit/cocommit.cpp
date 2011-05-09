@@ -199,7 +199,7 @@ QList<CoDiff*> CoCommit::diffs()
 	}
 	else
 	{
-		return makeDiff(repo(),m_parentsList.first(),this);
+		return makeDiff(repo(),m_parentsIds.first(),id());
 	}
 }
 
@@ -363,7 +363,7 @@ QList<CoDiff*> CoCommit::makeDiff(CoRepo* repo, CoCommit* a, CoCommit* b, QStrin
 {
 	if(!repo || !a)
 		return QList<CoDiff*>();
-	if(!b)
+	if(b)
 		return makeDiff(repo, a->id(), b->id(), paths);
 	else
 		return makeDiff(repo, a->id(), "", paths);
@@ -373,7 +373,7 @@ QList<CoDiff*> CoCommit::makeDiff(CoRepo* repo, CoTree* a, CoTree* b, QStringLis
 {
 	if(!repo || !a)
 		return QList<CoDiff*>();
-	if(!b)
+	if(b)
 		return makeDiff(repo, a->id(), b->id(), paths);
 	else
 		return makeDiff(repo, a->id(), "", paths);

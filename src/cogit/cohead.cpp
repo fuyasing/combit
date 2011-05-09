@@ -68,7 +68,7 @@ QList<CoHead*> CoHead::findAllHeads(CoRepo* repo, CoKwargs opts)
 	QList<CoHead*> heads;
 	cmd << "for-each-ref" << "refs/heads";
 	opts.insert("sort","*authordate");
-	opts.insert("format","%(refname) %(objectname)");
+	opts.insert("format","%(refname:short)%09%(objectname)");
 	QString out, error;
 	bool success = repo->repoGit()->execute(cmd, opts, &out, &error);
 	if(success)
@@ -77,9 +77,9 @@ QList<CoHead*> CoHead::findAllHeads(CoRepo* repo, CoKwargs opts)
 		foreach(line, out.trimmed().split("\n"))
 		{
 				QStringList lineSplit;
-				lineSplit =  line.trimmed().split(" ");
+				lineSplit =  line.trimmed().split("\t");
 				commit =lineSplit.last();
-				name = lineSplit.first().split('/').last();
+				name = lineSplit.first();
 				heads.append(new CoHead(repo, name, commit));
 		}
 	}

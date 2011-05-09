@@ -116,4 +116,3 @@ class COGIT_EXPORT CoRef : public QObject
 };
 
 #endif
-		/*!

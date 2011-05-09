@@ -158,18 +158,20 @@ class COGIT_EXPORT CoRepo : public QObject
 		CoRepo* forkBare(QString path, CoKwargs opts = CoKwargs());
 
 		/*! 对给定的分支或commit或tree打包
+		 * \param outFile 打包文件的文件名(包含路径)
 		 * \param name 分支名或commit或tree的id
 		 * \param prefix tar包中，每个文件名的前缀
-		 * \return 打成包的二进制码
+		 * \return 打包成功返回True
 		 */
-		QByteArray* archiveTar(QString treeish="master",QString prefix="");
+		bool archiveTar(QString &outFile, QString treeish="master",QString prefix="");
 
 		/*! 对给定的分支或commit或tree打包并压缩
+		 * \param outFile 压缩文件的文件名(包含路径)
 		 * \param name 分支名或commit或tree的id
 		 * \param prefix 压缩包中，每个文件名的前缀
-		 * \return 打成压缩包后的二进制码
+		 * \return 打包并压缩成功返回True
 		 */
-		QByteArray* archiveTarGz(QString treeish="master",QString prefix="");
+		bool archiveTarGz(QString &outFile, QString treeish="master",QString prefix="");
 		
 		/*! 将给定的路径初始化为Git bare Repo
 		 * \param path 要创建的bare Repo的完整路径(一般以/<name>.git结尾)

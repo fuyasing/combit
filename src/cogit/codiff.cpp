@@ -154,14 +154,14 @@ QList<CoDiff*> CoDiff::diffsFromString(CoRepo* repo, QString text)
 		return QList<CoDiff*>();
 	QList<CoDiff*> diffs;
 	QRegExp diffHeader(
-			"#^diff[ ]--git[ ]a/(\\S+)[ ]b/(\\S+)\\n(?:^similarity[ ]index[ ](\\d+)%\\n^rename[ ]from[ ](\\S+)\\n^rename[ ]to[ ](\\S+)(?:\\n|$))?(?:^old[ ]mode[ ](\\d+)\\n^new[ ]mode[ ](\\d+)(?:\\n|$))?(?:^new[ ]file[ ]mode[ ](.+)(?:\\n|$))?(?:^deleted[ ]file[ ]mode[ ](.+)(?:\\n|$))?(?:^index[ ]([0-9A-Fa-f]+)\\.\\.([0-9A-Fa-f]+)[ ]?(.+)?(?:\\n|$))?"
+			"^a/(\\S+)[ ]b/(\\S+)\\n(?:^similarity[ ]index[ ](\\d+)%\\n^rename[ ]from[ ](\\S+)\\n^rename[ ]to[ ](\\S+)(?:\\n|$))?(?:^old[ ]mode[ ](\\d+)\\n^new[ ]mode[ ](\\d+)(?:\\n|$))?(?:^new[ ]file[ ]mode[ ](.+)(?:\\n|$))?(?:^deleted[ ]file[ ]mode[ ](.+)(?:\\n|$))?(?:^index[ ]([0-9A-Fa-f]+)\\.\\.([0-9A-Fa-f]+)[ ]?(.+)?(?:\\n|$))?"
 			);
 	QString diff;
 	QStringList textSplit = ("\n"+text).split("\ndiff --git");
 	textSplit.removeFirst();
 	foreach(diff, textSplit)
 	{
-		if(diffHeader.indexIn(diff) != -1)
+		if(diffHeader.indexIn(diff.trimmed()) != -1)
 			diffs.append(
 					new CoDiff(repo, diffHeader.cap(1), diffHeader.cap(2),
 						diffHeader.cap(10), diffHeader.cap(11), 

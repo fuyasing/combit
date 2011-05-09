@@ -86,7 +86,7 @@ QStringList CoGit::transformKwargs(CoKwargs opts)
 			if(i.value().isEmpty())
 				args.append(QString("-%1").arg(i.key()));
 			else
-				args.append(QString("-%1 %2").arg(i.key()).arg(i.value()));
+				args.append(QString("-%1%2").arg(i.key()).arg(i.value()));
 		}
 		else
 		{

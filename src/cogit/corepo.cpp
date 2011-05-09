@@ -320,25 +320,29 @@ CoRepo* CoRepo::forkBare(QString path, CoKwargs opts)
 	}
 }
 
-QByteArray* CoRepo::archiveTar(QString treeish, QString prefix)
+bool CoRepo::archiveTar(QString &outFile, QString treeish, QString prefix)
 {
 	if(!isValid() || treeish.isEmpty())
-		return NULL;
+		return "";
 	QStringList cmd;
 	cmd << "archive" << treeish;
 	CoKwargs opts;
+	opts.insert("output",outFile);
 	if(!prefix.isEmpty())
 		opts.insert("prefix",prefix);
-	QByteArray* out = new QByteArray;
-	QByteArray* error = new QByteArray;
-	bool success = repoGit()->execute(cmd, opts, out, error);
-	if(!success)
+	QByteArray out,error;
+	bool success = repoGit()->execute(cmd, opts, &out, &error);
+	if(success)
 	{
+		return true;
 	}
-	return out;
+	else
+	{
+		return false;
+	}
 }
 
-QByteArray* CoRepo::archiveTarGz(QString treeish, QString prefix)
+bool CoRepo::archiveTarGz(QString &outFile, QString treeish, QString prefix)
 {
 	//TODO
 }
@@ -349,7 +353,8 @@ CoRepo* CoRepo::initBare(QString path, bool mkdir, CoKwargs opts)
 		return NULL;
 	QDir gitDir(path);
 	if(mkdir && !gitDir.exists())
-		gitDir.mkpath(path);
+		if(!gitDir.mkpath(path))
+			return NULL;
 	CoGit gitBin(path);
 	QStringList cmd;
 	cmd << "init";
